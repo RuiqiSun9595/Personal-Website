@@ -1,0 +1,1521 @@
+---
+title: Estimating Preferential Pairing in Polyploids
+author: Ruiqi Sun
+date: '2020-08-12'
+slug: estimating-preferential-pairing-in-polyploids
+categories:
+  - R
+tags:
+  - Statistics
+subtitle: ''
+summary: 'Polyploids (organisms with more than two copies of each chromosome) exhibit more complicated meiotic behavior compared to diploids. In diploids, two homologous chromosomes pair and separate during meiosis. However, multiple pairing configurations between chromosomes are possible in polyploids. This pairing behavior characterizes import classes of polyploids. With the growth of next-generation sequencing (NGS), non-model organisms are being studied and their meiotic behavior is of interest. However, no method currently exists to estimate interpretable parameters that characterize the degree and strength of preferential pairing during meiosis directly from genotypes, which are typical outputs of NGS data. In this thesis, we describe a way to directly estimate levels preferential pairing at individual loci using genotype data derived from NGS data. However, data from one locus are not able to identify interpretable parameters of interest. Thus, we provide a way to combine information between loci using a novel model-based clustering approach to obtain parameter estimates that are interpretable for the scientific community. We evaluate our methods on simulated data.'
+authors: []
+lastmod: '2020-08-12T12:37:55-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+output:
+  blogdown::html_page:
+    toc: true
+bibliography: autest02.bib
+biblio-style: apalike
+link-citations: yes
+math: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#ch:1">Introduction</a></li>
+<li><a href="#ch:2">Methods</a>
+<ul>
+<li><a href="#sec:2.1">Estimating Preferential Pairing using Maximum Likelihood Estimation</a></li>
+<li><a href="#sec:2.2">Combining information between loci to identify preferential pairing parameters via model-based clustering</a>
+<ul>
+<li><a href="#subsec:2.2.1">Clustering by Stan</a></li>
+<li><a href="#subsec:2.2.2">Clustering by Dip Test</a></li>
+<li><a href="#subsec:2.2.3">Clustering by Mclust</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#ch:3">Results</a>
+<ul>
+<li><a href="#sec:3.1">Maximum Likelihood Simulation</a></li>
+<li><a href="#sec:3.2">Simulation of model based on clustering</a>
+<ul>
+<li><a href="#subsec3.2.1">Data set</a></li>
+<li><a href="#subsec:3.2.2">Clustering results by Stan</a></li>
+<li><a href="#subsec:3.2.3">Clustering results by Dip Test</a></li>
+<li><a href="#subsec:3.2.4">Clustering results by Mclust</a></li>
+<li><a href="#sbusec:3.2.5">Comparing three methods</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#ch:4">Conclusion</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+
+<div id="ch:1" class="section level1">
+<h1>Introduction</h1>
+<p>Polyploidy refers to the presence of more than two sets of chromosomes
+within a single organism <span class="citation">(Mason <a href="#ref-mason2017polyploidy" role="doc-biblioref">2017</a>)</span>. Polyploidy plays
+important roles in agriculture <span class="citation">(Hilu <a href="#ref-khidir1993ploy" role="doc-biblioref">1993</a>)</span>, species evolution
+<span class="citation">(Otto and Whitton <a href="#ref-otto2000polyploid" role="doc-biblioref">2000</a>; Joly et al. <a href="#ref-joly2006evo" role="doc-biblioref">2006</a>; Wendel <a href="#ref-wendel2000genome" role="doc-biblioref">2000</a>)</span>, medicine
+<span class="citation">(Coward and Harding <a href="#ref-coward2014size" role="doc-biblioref">2014</a>)</span>, among other fields. The research on polyploids is
+thus extensive. Several agricultural crops, such as wheat, soybean,
+potatoes, sugarcane, and cotton are polyploids <span class="citation">(Hilu <a href="#ref-khidir1993ploy" role="doc-biblioref">1993</a>)</span>, and
+polyploidy plays an important role on plant evolution
+<span class="citation">(Otto and Whitton <a href="#ref-otto2000polyploid" role="doc-biblioref">2000</a>)</span>. Polyploidization is also a property of some
+cancerous cells <span class="citation">(Coward and Harding <a href="#ref-coward2014size" role="doc-biblioref">2014</a>)</span>. Therefore, studying polyploids is of
+great significance.</p>
+<p>Polyploids are often divided into two categories based on their
+evolutionary histories — allopolyploids and autopolyploids
+<span class="citation">(Cao, Osborn, and Doerge <a href="#ref-cao2004correct" role="doc-biblioref">2004</a>)</span>. Autopolyploids arise from whole genome duplications
+within a single species. Allopolyploids arise by hybridization between
+species yielding polyploidization <span class="citation">(Bourke et al. <a href="#ref-doi:10.1111/tpj.13496" role="doc-biblioref">2017</a>)</span>. Chromosomes
+are also divided into two categories. Two chromosomes that arise from
+the same species are called homologues. Two chromosomes that arise from
+separate species are said to be homoeologues.</p>
+<p>Allopolyploids and autopolyploids are often distinguishable by their
+meiotic behavior, which exhibits greater complexity than in diploids.
+Meiosis is an elementary process in biology <span class="citation">(Voorrips and Maliepaard <a href="#ref-Voorripsarticle" role="doc-biblioref">2012</a>)</span>, which
+allows parents to send their genetic materials to the next generation.
+There are many steps to meiosis, but we will focus on the pairing
+behavior during prophase I. During prophase I, the nucleoli and nuclear
+envelop disappear, hom(oe)ologous chromosomes pair and exchange genetic
+material. In allopolyploids, homologous chromosomes always pair with
+each other during prophase I. In autopolyploids, hom(oe)ologous
+chromosomes randomly pair together with no preference.</p>
+<p>The definition of autopolyploidy and allopolyploidy based on the
+evolutionary background depends on arbitrary thresholds of evolutionary
+relatedness of homoeologues. Characterizing meiotic behavior requires no
+such thresholds and so researchers have also suggested defining ploidy
+<em>by</em> their meiotic behavior. However, unlike in diploids, where a parent
+sends one copy to each offspring, in polyploids there is greater
+diversity in the behavior of gametic transmission. For example, in
+tetraploids (individuals with four copies of their genome) there are
+<span class="math inline">\(\binom{4}{2}/2!\)</span> = 3 ways that gametes can pair during
+meiosis. Therefore, there are many complications in estimating meiotic
+behavior. A complication that arises in distinguishing between ploidy
+types is that some pairing configurations are more common than other
+<span class="citation">(Sybenga <a href="#ref-doi:10.1139/g94-149" role="doc-biblioref">1994</a>)</span>. In a polyploid the given chromosomes may be
+completely homologues or there may be two slightly different types
+(homoeologues) present that pair more easily with their own type than
+with the other <span class="citation">(Voorrips and Maliepaard <a href="#ref-Voorripsarticle" role="doc-biblioref">2012</a>)</span>. The degree of preferential pairing
+may vary from 0% (fully random pairing, as in autopolyploids where the
+four copies of a chromosome are completely homologous) to 100% (the
+homoeologues pair exclusively with their own type, as in
+allopolyploids). Thus, intermediate forms with partially preferential
+pairing may occur. Therefore, based on pairing behavior in meiosis,
+there are three pairing behaviors: autopolyploids, allopolyploids, and
+intermediate levels of preferential pairing <span class="citation">(Bourke et al. <a href="#ref-doi:10.1111/tpj.13496" role="doc-biblioref">2017</a>)</span>.</p>
+<p>Preferential pairing has been estimated in several ways. Ancestral
+origin frequencies are used to infer preferential pairing rates
+<span class="citation">(Sybenga <a href="#ref-doi:10.1139/g94-149" role="doc-biblioref">1994</a>)</span>. The method of haplotype reconstruction, provided
+in TetraOrigin, consists of multilocus parental linkage phasing and
+subsequent ancestral inference from SNP dosage data
+<span class="citation">(Zheng et al. <a href="#ref-zheng2016probabilistic" role="doc-biblioref">2016</a>)</span>. Preferential pairing can also be estimated by
+examining repulsion‐phase linkage patterns <span class="citation">(Bourke et al. <a href="#ref-doi:10.1111/tpj.13496" role="doc-biblioref">2017</a>)</span>.</p>
+<p>Unfortunately, none of the above methods directly use genotype data, a
+common form of data in the modern sequencing age. For many types of
+data, the dosage of alleles are available at individual loci, but the
+phased configuration of these alleles are not known. These data often
+result from next-generation sequencing technologies that are then
+genotyped using genotyping software
+<span class="citation">(Gerard et al. <a href="#ref-gerard2018genotyping" role="doc-biblioref">2018</a>; Gerard and Ferrão <a href="#ref-gerard2019priors" role="doc-biblioref">2019</a>; Clark, Lipka, and Sacks <a href="#ref-clark2019polyrad" role="doc-biblioref">2019</a>; Blischak, Kubatko, and Wolfe <a href="#ref-blischak2018snp" role="doc-biblioref">2018</a>; Voorrips, Gort, and Vosman <a href="#ref-voorrips2011genotype" role="doc-biblioref">2011</a>)</span>.
+We use genotype data with F1 population (full-sib progeny of two
+parents) directly to analysis preferential pairing. Throughout, we
+assume that we are dealing with a tetraploid population and leave higher
+ploidy levels for future work. Therefore, In this thesis, we wish to
+distinguish between the types of ploidy and to estimate the strength of
+preferential pairing in polyploids from genotype data with F1 population
+directly.</p>
+<p>In this thesis, we will use F1 population in genotype data, which
+consists of full-sib progeny of two parents. In an F1 population, each
+individual is the result of two meiotic divisions from each parent. We
+thus have replications of the meiotic behavior from each parent. We
+begin by providing a way to estimate preferential pairing at each locus
+from parents’ and progenies’ genotype. Due to the unidentifiability of
+which chromosomes contain which alleles, we provide a way based on
+clustering to identify this and estimate interpretable parameters. At
+last, through a simulation study, we demonstrate that our work can
+distinguish between the types of ploidy from genotype data directly.</p>
+<p>The following is the outline of our paper. In Section <a href="#sec:2.1">2.1</a>, we
+provide a way to estimate preferential pairing at each locus using just
+genotype data. In Section <a href="#sec:2.2">2.2</a>, we provide a way to identify the
+parameterization and estimate interpretable parameters using model-based
+clustering. We demonstrate, through simulations, in Section <a href="#sec:3.1">3.1</a>
+that we can accurately estimate the levels of preferential pairing at
+each locus through maximum likelihood estimation. We demonstrate in
+Section <a href="#sec:3.2">3.2</a> that we can accurately distinguish between
+autopolyploidy and intermediate levels of polyploidy. However, we note
+that accurately detecting allopolyploidy is difficult. We conclude with
+a discussion in Chapter <a href="#ch:4">4</a> .</p>
+</div>
+<div id="ch:2" class="section level1">
+<h1>Methods</h1>
+<div id="sec:2.1" class="section level2">
+<h2>Estimating Preferential Pairing using Maximum Likelihood Estimation</h2>
+<p>In this section, we will introduce a method to estimate preferential
+pairing from genotype data. We will now describe the data under
+consideration. We assume that we are working with an F1 population (a
+biparental cross) which is common in breeding populations
+<span class="citation">(Sybenga <a href="#ref-doi:10.1139/g94-149" role="doc-biblioref">1994</a>)</span>. An F1 population consists of parents and
+offspring. We assume that we have genotype data from each parent and
+each offspring. Genotype data consists of an integer
+<span class="math inline">\(\{0, 1, \ldots,K\}\)</span> of the number of reference alleles an individual
+contains at a bi-allelic locus. We will denote the reference allele by
+and the alternative allele by . We denote the ploidy by <span class="math inline">\(K\)</span>, which we
+assume to be the same for all individuals. In our research, we are
+interested the pairing behavior in tetraploids (<span class="math inline">\(K = 4\)</span>). For
+convenience, we have summarized all the parameters we used in Table <a href="#tab:para-inter">1</a>.</p>
+<table>
+<caption><span id="tab:para-inter">Table 1: </span> Parameter interpretation</caption>
+<thead>
+<tr class="header">
+<th align="left">Parameter</th>
+<th align="center">Means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(K\)</span></td>
+<td align="center">The ploidy of the species. In our model, we assume all individuals are tetraploid (i.e. <span class="math inline">\(K = 4\)</span>).</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\ell_j\)</span></td>
+<td align="center">The genotype of parent <span class="math inline">\(j\)</span>, which is defined as the dosage of A’s in parent <span class="math inline">\(j\)</span>’s genome.</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\boldsymbol m_{ij}\)</span></td>
+<td align="center">Pairing configuration of a parent for a child <span class="math inline">\(i\)</span>. <span class="math inline">\(\boldsymbol m_{ij}=(m_{1ij}, m_{2ij}, m_{3ij})\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(m_{1ij}\)</span></td>
+<td align="center">The number of copies of “aa” from parent <span class="math inline">\(j\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(m_{2ij}\)</span></td>
+<td align="center">The number of copies of “Aa” from parent <span class="math inline">\(j\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(m_{3ij}\)</span></td>
+<td align="center">The number of copies of “AA” from parent <span class="math inline">\(j\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(z_{ij}\)</span></td>
+<td align="center">The number of A’s sent by parent <span class="math inline">\(j\)</span> to child i.</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(y_i\)</span></td>
+<td align="center">The genotype of children <span class="math inline">\(i\)</span>, which is defined as the dosage of A’s in child <span class="math inline">\(i\)</span>’s genome, <span class="math inline">\(i \in \{1, 2, ..., n \}\)</span>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\theta_i\)</span></td>
+<td align="center">The probability of two chromosomes pairing together, <span class="math inline">\(i \in \{1, 2, 3\}\)</span>.</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\theta_1\)</span></td>
+<td align="center">The probability of chromosome 1 and 2 pair together while chromosome 3 and 4 pair together.</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\theta_2\)</span></td>
+<td align="center">The probability of chromosome 1 and 3 pair together while chromosome 2 and 4 pair together.</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\theta_3\)</span></td>
+<td align="center">The probability of chromosome 1 and 4 pair together while chromosome 2 and 3 pair together.</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\gamma_{jk}\)</span></td>
+<td align="center">Preferential pairing parameter of parent <span class="math inline">\(j\)</span> at locus <span class="math inline">\(k\)</span>, <span class="math inline">\(j \in \{1, 2\}\)</span>, <span class="math inline">\(k \in \{1, \ldots, m\}\)</span>.</td>
+</tr>
+</tbody>
+</table>
+<p>To estimate preferential pairing, we need to understand the possible
+pairing pattern in meiosis and define the preferential pairing
+parameter. During prophase I, chromosomes will pair with each other. For
+tetraploids, under bivalent pairing, there are three possible pairing
+patterns: pair together, pair together, or pair together, which is
+called a “pairing configuration”. To be more specific, we use
+<span class="math inline">\(\boldsymbol{m}_{ij} = (m_{1ij}, m_{2ij}, m_{3ij})\)</span> to record the number of each
+pattern from parent <span class="math inline">\(j\)</span> to a child <span class="math inline">\(i\)</span> (<span class="math inline">\(j \in (1,2)\)</span>). In <span class="math inline">\(\boldsymbol m_{ij}\)</span>,
+<span class="math inline">\(m_{1ij}\)</span> is the number of copies of from parent <span class="math inline">\(j\)</span> to child <span class="math inline">\(i\)</span>,
+<span class="math inline">\(m_{2ij}\)</span> is the number of copies of from parent <span class="math inline">\(j\)</span> to child <span class="math inline">\(i\)</span>, and
+<span class="math inline">\(m_{3ij}\)</span> is the number of copies of from parent <span class="math inline">\(j\)</span> to child <span class="math inline">\(i\)</span>. Let
+<span class="math inline">\(\ell_j\)</span> denote the (known) number of copies of for parent <span class="math inline">\(j\)</span>’s genome.
+The pairing configuration for each offspring depends on parents’
+genotypes. After getting the genotype of parent <span class="math inline">\(j\)</span>, we can get the
+possible values of <span class="math inline">\(\boldsymbol m_{ij}\)</span>. We characterize the distribution of
+pairing configurations to record the frequency of three patterns ( pair
+together, pair together, or pair together), that is the frequency at
+which reference and alternative alleles pair during meiosis. The
+distribution of <span class="math inline">\(\boldsymbol m_{ij}\)</span> is conditional on the values of <span class="math inline">\(\ell_1\)</span>
+and <span class="math inline">\(\ell_2\)</span>. We provide this distribution in Table <a href="#tab:dist-m">2</a>. When
+<span class="math inline">\(\ell_j\)</span> = 2, there are two possible pairing configurations:
+<span class="math inline">\(\boldsymbol m_{ij}=(1, 0, 1)\)</span> or <span class="math inline">\(\boldsymbol m_{ij}=(0, 2, 0)\)</span>. Therefore, we define
+<span class="math inline">\(\gamma_{jk}\)</span> to be the probability of the pairing configuration
+<span class="math inline">\(\boldsymbol m_{ij}=(1, 0, 1)\)</span> from parent <span class="math inline">\(j\)</span> at locus <span class="math inline">\(k\)</span> when <span class="math inline">\(\ell_j = 2\)</span>.
+Thus <span class="math inline">\(1-\gamma_{jk}\)</span> is the probability of the pairing configuration
+<span class="math inline">\(\boldsymbol m_{ij}=(0, 2, 0)\)</span> from parent <span class="math inline">\(j\)</span> at locus <span class="math inline">\(k\)</span> when <span class="math inline">\(\ell_j = 2\)</span>.
+We are interested in <span class="math inline">\(\gamma_{jk}\)</span>, which is also called preferential
+pairing parameter.</p>
+<table>
+<caption><span id="tab:dist-m">Table 2: </span> Distribution of pairing configuration</caption>
+<colgroup>
+<col width="8%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>   <span class="math inline">\(\boldsymbol m_{ij}\)</span>     </th>
+<th><font size=1><span class="math inline">\(Pr(\boldsymbol m_{ij} | \ell_j = 0)\)</span></font></th>
+<th><font size=1><span class="math inline">\(Pr(\boldsymbol m_{ij} | \ell_j = 1)\)</span></font></th>
+<th><font size=1><span class="math inline">\(Pr(\boldsymbol m_{ij} | \ell_j = 2)\)</span></font></th>
+<th><font size=1><span class="math inline">\(Pr(\boldsymbol m_{ij} | \ell_j = 3)\)</span> </font></th>
+<th><font size=1><span class="math inline">\(Pr(\boldsymbol m_{ij} | \ell_j = 4)\)</span></font></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><font size=1>(2, 0, 0)</font></td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td><font size=1>(1, 1, 0)</font></td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td><font size=1>(1, 0, 1)</font></td>
+<td>0</td>
+<td>0</td>
+<td><span class="math inline">\(\gamma_{jk}\)</span></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td><font size=1>(0, 2, 0)</font></td>
+<td>0</td>
+<td>0</td>
+<td><span class="math inline">\(1-\gamma_{jk}\)</span></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td><font size=1>(0, 1, 1)</font></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td><font size=1>(0, 0, 2)</font></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>After defining the parameter we interested, we need to find a method to
+estimate the preferential pairing parameter. For tetraploids, during
+prophase I, under bivalent pairing, there are three possible pairing
+configurations: pairing together, pairing together, or pairing together.
+During anaphase I and telophase I, pairing chromosomes move to the
+opposite poles of the cell and separate into two individual cells.
+Therefore, if the pattern is , one will be sent to the offspring.
+Similarly, if the pattern is , one will be sent to the offspring.
+However, if the pattern is , both and will have equal probability to be
+sent to the offspring. We define <span class="math inline">\(z_{ij}\)</span> to be the number of ’s sent by
+parent <span class="math inline">\(j\)</span> to child <span class="math inline">\(i\)</span>, and use
+<span class="math inline">\(\boldsymbol m_{ij}=(m_{1ij}, m_{2ij}, m_{3ij})\)</span> to record the pairing
+configuration of parent <span class="math inline">\(j\)</span> for child <span class="math inline">\(i\)</span>. We can conclude that the
+distribution for allele segregation is <span class="math inline">\(z_{ij}\)</span> = <span class="math inline">\(m_{3ij}\)</span> +
+<span class="math inline">\(Binomial(\frac{1}{2}, m_{2ij})\)</span>. Therefore,
+<span class="math inline">\(z_{ij} \in \{0, ..., \min(\frac{K}{2}, \ell_j)\}\)</span>. Therefore, we can
+get <span class="math inline">\(Pr(z_{ij}|\ell_j, \gamma_{jk})\)</span> by integrating over the pairing
+configurations. The probability distribution of <span class="math inline">\(z_{ij}\)</span> given the
+pairing configurations is presented in Table <a href="#tab:Zdist">3</a>.</p>
+<table>
+<caption><span id="tab:Zdist">Table 3: </span> Distribution of The Number of A’s Sent by Parent <span class="math inline">\(j\)</span> to child <span class="math inline">\(i\)</span></caption>
+<thead>
+<tr class="header">
+<th align="center"><span class="math inline">\(\boldsymbol m_{ij}\)</span></th>
+<th align="center"><span class="math inline">\(Pr(z_{ij} = 0)\)</span></th>
+<th align="center"><span class="math inline">\(Pr(z_{ij} = 1)\)</span></th>
+<th align="center"><span class="math inline">\(Pr(z_{ij} = 2)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">(2, 0, 0)</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">(1, 1, 0)</td>
+<td align="center">0.5</td>
+<td align="center">0.5</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="center">(1, 0, 1)</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">(0, 2, 0)</td>
+<td align="center">0.25</td>
+<td align="center">0.5</td>
+<td align="center">0.25</td>
+</tr>
+<tr class="odd">
+<td align="center">(0, 1, 1)</td>
+<td align="center">0</td>
+<td align="center">0.5</td>
+<td align="center">0.5</td>
+</tr>
+<tr class="even">
+<td align="center">(0, 0, 2)</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>The above exposition results in a likelihood for the preferential
+pairing parameter, <span class="math inline">\(\gamma_{jk}\)</span>, that we can estimate via maximum
+likelihood. We define <span class="math inline">\(y_i\)</span> as the genotype of children <span class="math inline">\(i\)</span>, which
+records the dosage of in child <span class="math inline">\(i\)</span>’s genotype, and
+<span class="math inline">\(y_i = z_{i1} + z_{i2}\)</span>,
+<span class="math inline">\(Pr(y_i|\ell_1, \ell_2, \gamma_{1k}, \gamma_{2k})\)</span> is a convolution of
+<span class="math inline">\(Pr(z_{i1}|\ell_1, \gamma_{1k})\)</span> and <span class="math inline">\(Pr(z_{i2}|\ell_2, \gamma_{2k})\)</span>.
+Therefore, we can conclude that
+<span class="math display" id="eq:convolve">\[\begin{align}
+\tag{1}
+    Pr(y|\ell_1,\ell_2,\gamma_{1k},\gamma_{2k}) = \sum_{i=\max(0, y - 2)}^{\min(2,y)} Pr(i|\ell_1, \gamma_{1k})Pr(y-i|\ell_2, \gamma_{2k})
+\end{align}\]</span>
+Suppose we have <span class="math inline">\(Y_1, Y_2, ..., Y_n\)</span>, the realizations from each child,
+which are independent and identically distributed according to
+probability mass function <a href="#eq:convolve">(1)</a>. We can use maximum likelihood estimation to
+estimate the preferential pairing parameters <span class="math inline">\(\gamma_{1k}\)</span> and
+<span class="math inline">\(\gamma_{2k}\)</span>. The likelihood can be simplified by using summary
+statistics of counts of offspring genotypes as follows:
+<font size=2>
+<span class="math display" id="eq:likelihood">\[\begin{align}
+\tag{2}
+    \begin{split}
+    L(\gamma_{1k}, \gamma_{2k}|Y_1, Y_2, ..., Y_n) =&amp; n_0\log(Pr(Y_i = 0)) + n_1\log((Pr(Y_i = 1)) \\
+    &amp;+ n_2\log((Pr(Y_i = 2)) + n_3\log((Pr(Y_i = 3)) \\
+    &amp;+ n_4\log((Pr(Y_i = 4)),
+   \end{split}
+\end{align}\]</span>
+</font>
+where <span class="math inline">\(n_i\)</span> is the number of children
+which have genotype of <span class="math inline">\(i\)</span>, <span class="math inline">\(i \in \{0, 1, 2, 3, 4\}\)</span>. Note that
+<span class="math inline">\(\gamma_{1k}\)</span> appears only at <span class="math inline">\(\ell_1 = 2\)</span> and <span class="math inline">\(\gamma_{2k}\)</span> appears
+only at <span class="math inline">\(\ell_2 = 2\)</span>. We used Brent’s method <span class="citation">(Brent <a href="#ref-brent1973algorithms" role="doc-biblioref">1973</a>)</span> to
+maximize likelihood <a href="#eq:likelihood">(2)</a> and find the MLE of <span class="math inline">\(\gamma_j\)</span> in R.</p>
+</div>
+<div id="sec:2.2" class="section level2">
+<h2>Combining information between loci to identify preferential pairing parameters via model-based clustering</h2>
+<p>In the previous section, we obtained preferential pairing parameter
+estimates (the <span class="math inline">\(\hat\gamma_{jk}\)</span>’s) via maximum likelihood estimation.
+Since both parents are from the same species, we make the assumption
+that <span class="math inline">\(\hat\gamma_{1k} = \hat\gamma_{2k}\)</span>. Therefore, to simplify
+notation, we ignore which parent the preferential pairing parameter
+comes from, and denote <span class="math inline">\(\hat\gamma_{jk}\)</span> by just <span class="math inline">\(\hat\gamma_k\)</span>. Each
+<span class="math inline">\(\hat\gamma_k\)</span> estimates one of <span class="math inline">\(\{\theta_1, \theta_2, \theta_3\}\)</span>. If
+at locus <span class="math inline">\(k\)</span>, chromosomes 1 and 2 carry the same allele and chromosomes
+3 and 4 carry the other allele, <span class="math inline">\(\hat{\gamma}_k\)</span> is estimating
+<span class="math inline">\(\theta_1\)</span>. If at locus <span class="math inline">\(k\)</span>, chromosomes 1 and 3 carry the same allele
+and chromosomes 2 and 4 carry the other allele, <span class="math inline">\(\hat{\gamma}_k\)</span> is
+estimating <span class="math inline">\(\theta_2\)</span>. If at locus <span class="math inline">\(k\)</span>, chromosomes 1 and 4 carry the
+same allele and chromosomes 2 and 3 carry other the allele,
+<span class="math inline">\(\hat{\gamma}_k\)</span> is estimating <span class="math inline">\(\theta_3\)</span>. However, due to the
+unidentifiability of which chromosomes contain which alleles, which
+<span class="math inline">\(\theta_j\)</span> each <span class="math inline">\(\hat{\gamma}_i\)</span> corresponds to is unknown. However, by
+borrowing information between loci, we see that there should be three
+clusters of <span class="math inline">\(\hat{\gamma}_k\)</span>’s — one corresponding to each <span class="math inline">\(\theta_j\)</span>.
+Thus, we will use model-based clustering approaches to identify and
+estimate the <span class="math inline">\(\theta_j\)</span>’s, and thereby estimate the degree and strength
+of preferential pairing.</p>
+<div id="subsec:2.2.1" class="section level3">
+<h3>Clustering by Stan</h3>
+<p>During prophase I, tetraploids, which contain four copies of chromosomes
+in their genomes, will pair bivalently, and there are three possible
+pairing behaviors. The four copies are denoted as chromosomes 1, 2, 3,
+and 4. Under bivalent pairing, there are three possible formations: (i)
+1 and 2 pair together while 3 and 4 pair together; (ii) 1 and 3 pair
+together while 2 and 4 pair together; and (iii) 1 and 4 pair together
+while 2 and 3 pair together. Let <span class="math inline">\(\theta_1\)</span> denote the probability of
+the first situation, <span class="math inline">\(\theta_1 = Pr\)</span>({12}{34}); <span class="math inline">\(\theta_2\)</span> denote the
+probability of the second situation, <span class="math inline">\(\theta_2 = Pr\)</span>({13}{24}); and
+<span class="math inline">\(\theta_3\)</span> denote the probability of the third situation,
+<span class="math inline">\(\theta_3 = Pr\)</span>({14}{23}). Tetraploids also have three different pairing
+behavior: autopolyploidy, allopolyploidy and partial preferential
+pairing. For autopolyploidy, hom(oe)ologous chromosomes randomly pair
+together. For allopolyploidy, homologous chromosomes always pair with
+each other during prophase I. For partial preferential pairing, there is
+intermediate pairing behavior, all hom(oe)ologous pair but there is a
+preference for homologous pairing <span class="citation">(Bourke et al. <a href="#ref-doi:10.1111/tpj.13496" role="doc-biblioref">2017</a>)</span>. Therefore,
+for autopolyploidy, there is no preferential pairing and
+<span class="math inline">\(\theta_1 = \theta_2 = \theta_3 = \frac{1}{3}\)</span>, so
+<span class="math inline">\(E[\hat{\gamma}] \approx \frac{1}{3}\)</span>; for allopolyploidy, homologous
+chromosomes always pair with each other and thus one <span class="math inline">\(\theta\)</span> should be
+1 and the other two <span class="math inline">\(\theta_j\)</span>’s should be 0. For intermediate pairing
+behavior, we take the approach of <span class="citation">(Wu et al. <a href="#ref-wu2001general" role="doc-biblioref">2001</a>)</span> and assume the
+probability of either configuration of homoeologous pairing is equal.
+Thus, we let <span class="math inline">\(\theta\)</span> denote the probability of homologous pairing,
+which implies that each homoeologous pairing configuration has
+probability <span class="math inline">\(\frac{1-\theta}{2}\)</span>. We make the reasonable assumption that
+homologous pairing is more likely and so <span class="math inline">\(\theta &gt; \frac{1}{3}\)</span>. If
+<span class="math inline">\(\theta\)</span> is the probability of homologous pairing, these scenarios
+together imply <span class="math inline">\(\theta = \frac{1}{3}\)</span> for autopolyploids, <span class="math inline">\(\theta = 1\)</span>
+for allopolyploids, and <span class="math inline">\(\theta \in (\frac{1}{3}, 1)\)</span> for segmental
+polyploids.</p>
+<p>Standard results from maximum likelihood theory guarantee asymptotic
+normality of the maximum likelihood estimators
+<span class="citation">(Casella and Berger <a href="#ref-casella2002statistical" role="doc-biblioref">2002</a>)</span>. Therefore, we model the estimates
+<span class="math inline">\(\hat{\gamma}_k\)</span>’s according a normal mixture model. Each mixture
+corresponds to either homologous pairing (with mean <span class="math inline">\(\theta\)</span>) or
+homoeologous pairing (with mean <span class="math inline">\(\frac{1-\theta}{2}\)</span>). Thus, we can
+model each <span class="math inline">\(\hat{\gamma}_k\)</span> with
+<span class="math display">\[\begin{align}
+    f(\hat{\gamma}_k|\theta, \sigma_1^2, \sigma_2^2, \pi) = \pi N(\hat{\gamma}_k|\theta, \sigma_1^2) + (1-\pi) N(\hat{\gamma}_k|\frac{1 - \theta}{2}, \sigma_2^2)
+\end{align}\]</span>
+where <span class="math inline">\(N(\cdot|a,b)\)</span> denotes the normal density function with mean <span class="math inline">\(a\)</span>
+and variance <span class="math inline">\(b\)</span>. Here, <span class="math inline">\(\pi\)</span> is the proportion of <span class="math inline">\(\hat{\gamma}_k\)</span> that
+are estimating <span class="math inline">\(\theta\)</span> — or, in other words, the proportion of loci
+such that the homologous chromosomes share the same alleles. The joint
+pdf of <span class="math inline">\(\boldsymbol{\hat\gamma} = (\hat\gamma_1, \dots, \hat\gamma_m)\)</span> is thus
+<span class="math display" id="eq:l-PDF">\[\begin{align}
+\tag{3}
+f(\hat\gamma_1, \dots, \hat\gamma_m |\pi, \theta, \sigma_1^2,\sigma_2^2) = \prod_{i=1}^{n} [\pi N(\hat\gamma_k|\theta,\sigma_1^2)+(1-\pi)N(\hat\gamma_k|\frac{1-\theta}{2},\sigma_2^2)]
+\end{align}\]</span></p>
+<p>We will estimate the parameters in <a href="#eq:l-PDF">(3)</a> using Bayesian approaches. This
+requires setting priors over the parameters <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\pi\)</span>,
+<span class="math inline">\(\sigma_1^2\)</span> and <span class="math inline">\(\sigma_2^2\)</span>. We place a non-informative prior over the
+ploidy type (autopolyploidy versus intermediate versus allopolyploidy),
+assuming each occurs <em>a priori</em> with probability <span class="math inline">\(\frac{1}{3}\)</span>:</p>
+<p><span class="math display" id="eq:prioro-theta">\[\begin{align}
+\tag{4}
+  \theta \sim
+    \begin{cases}
+     \delta(\frac{1}{3})  &amp; \text{w.p.} \frac{1}{3}\\
+     \text{unif}(\frac{1}{3}, 1)&amp; \text{w.p.} \frac{1}{3} \\
+     \delta(1) &amp; \text{w.p.} \frac{1}{3},
+    \end{cases}
+\end{align}\]</span></p>
+<p>where <span class="math inline">\(\delta(a)\)</span> denotes the degenerate distribution
+with pointmass at <span class="math inline">\(a\)</span>. Placing this mixed discrete/continuous prior over
+<span class="math inline">\(\theta\)</span> will induce the posterior to give us posterior probabilities of
+each ploidy type based on the posterior distribution of <span class="math inline">\(\theta\)</span>. For
+the other parameters, the prior of <span class="math inline">\(\pi\)</span> is <span class="math inline">\(\pi \sim Beta(1,2)\)</span>, which
+corresponds to placing a dirichlet(1,1,1) prior over
+<span class="math inline">\((\theta_1, \theta_2, \theta_3)\)</span> then conditioning on
+<span class="math inline">\(\theta_2 = \theta_3\)</span>. In order to place a prior on <span class="math inline">\(\sigma^2\)</span>, we use
+the results of Theorem <a href="#thm:max-var">1</a>, where
+<span class="math inline">\(\max\sigma^2 = \frac{1}{4}\)</span>. Thus, for <span class="math inline">\(\sigma^2\)</span>, we set
+<span class="math inline">\(\sigma^2 \sim unif(0,\frac{1}{4})\)</span>.</p>
+
+<div class="theorem">
+<span id="thm:max-var" class="theorem"><strong>Theorem 1  </strong></span>Let X be a random variable with support on [0,1], then
+<span class="math display">\[\begin{align}
+    \max\{Var(X)\}=\frac{1}{4}.
+\end{align}\]</span>
+</div>
+
+<div class="proof">
+ <span class="proof"><em>Proof. </em></span> Given that X <span class="math inline">\(\in[0,1]\)</span>, we have
+<span class="math display">\[\begin{align}
+        X^2 \leq X \Rightarrow E(X^2) \leq E(X) = m
+\end{align}\]</span>
+thus
+<span class="math display" id="eq:var-max-eq">\[\begin{align}
+\tag{5}
+    Var(X) = E(x^2) - E(X)^2 \leq m - m^2
+\end{align}\]</span>
+This variance bound is maximized at <span class="math inline">\(m=\frac{1}{2}\)</span>, for which the bound has value
+<span class="math inline">\(\frac{1}{4}\)</span>. Since a <span class="math inline">\(Bern(\frac{1}{2})\)</span> random variable has variance
+<span class="math inline">\(\frac{1}{4}\)</span>, this bound is tight.
+</div>
+<p>To get the posterior probability
+<span class="math inline">\(Pr(Pairing\ Behavior|\hat\gamma_1, \dots, \hat\gamma_m)\)</span>, we will use
+the Stan probabilistic programming language <span class="citation">(Stan Development Team <a href="#ref-Rstan" role="doc-biblioref">2020</a>)</span>. Stan (Sampling
+through adaptive neighborhoods) is a program which will automatically
+apply Hamiltonian Monte Carlo given a Bayesian model. We just need to
+set up the prior distribution and the data distribution, identify the
+parameter we want to estimate, and then we can obtain samples from the
+posterior distribution. This allows us to calculate various summaries of
+the posterior distribution. However, Stan does not allow for discrete
+parameterizations. This causes problems due to the prior we have for
+<span class="math inline">\(\theta\)</span> that distinguishes between ploidy types <a href="#eq:prioro-theta">(4)</a>. Thus, we fit the
+following equivalent model in Stan that reparameterizes <span class="math inline">\(\theta\)</span> to just
+be the preferential pairing parameter given intermediate levels of
+preferential pairing, and marginalizes out the ploidy types.</p>
+<p><span class="math display" id="eq:pdf-allo-data" id="eq:pdf-pref-data" id="eq:pdf-auto-data">\[\begin{align*}
+\tag{6}
+f_1(\hat\gamma_1, \dots, \hat\gamma_m |\pi, \sigma_1^2,\sigma_2^2) &amp;= \prod_{i=1}^{n} [\pi N(\hat\gamma_k|\frac{1}{3},\sigma_1^2)+(1-\pi)N(\hat\gamma_k|\frac{1}{3},\sigma_2^2)]\\
+\tag{7}
+f_2(\hat\gamma_1, \dots, \hat\gamma_m | \pi,\theta, \sigma_1^2,\sigma_2^2) &amp;= \prod_{i=1}^{n}[\pi N(\hat\gamma_k|\theta,\sigma_1^2)+(1-\pi)N(\hat\gamma_k|\frac{1-\theta}{2},\sigma_2^2)]\\
+\tag{8}
+f_3(\hat\gamma_1, \dots, \hat\gamma_m|\pi, \sigma_1^2,\sigma_2^2) &amp;= \prod_{i=1}^{n} [\pi N(\hat\gamma_k|1,\sigma_1^2)+(1-\pi)N(0,\sigma_2^2)]\\
+\end{align*}\]</span></p>
+<p><span class="math display" id="eq:full-like">\[\begin{align*}
+\tag{9}
+\begin{split}
+f(\hat\gamma_1, \dots, \hat\gamma_m|\pi, \theta, \sigma_1^2,\sigma_2^2) &amp;= \frac{1}{3}f_1(\hat\gamma_1, \dots, \hat\gamma_m |\pi, \sigma_1^2,\sigma_2^2)\\
+&amp;+ \frac{1}{3}f_2(\hat\gamma_1, \dots, \hat\gamma_m | \pi,\theta, \sigma_1^2,\sigma_2^2) \\
+&amp;+ \frac{1}{3}f_3(\hat\gamma_1, \dots, \hat\gamma_m|\pi, \sigma_1^2,\sigma_2^2)
+\end{split}
+\end{align*}\]</span></p>
+<p>Note that, for <span class="math inline">\(f_3\)</span>, MLE theory is no longer
+valid because the parameter is on the boundary of the parameter space
+<span class="citation">(Marchand and Strawderman <a href="#ref-10.2307/4356296" role="doc-biblioref">2004</a>)</span>. For convenience, we continue to use normality as an
+approximation and leave better modeling for future work. The likelihood
+we implemented in Stan is <a href="#eq:full-like">(9)</a>.</p>
+<p>In order to obtain the posterior probability of each ploidy type, we
+need to calculate the marginal distribution of the <span class="math inline">\(\hat{\gamma}\)</span>’s
+conditional on the ploidy type. Stan <span class="citation">(Stan Development Team <a href="#ref-stan2018" role="doc-biblioref">2018</a>)</span> will perform this
+marginalization automatically. Thus, we can obtain the following:</p>
+<p><span class="math display" id="eq:l3" id="eq:l2" id="eq:l1">\[\begin{align*}
+\tag{10}
+\begin{split}
+L_1 &amp;= Pr(\boldsymbol{\hat\gamma} |autopolyploidy) \\
+&amp;= \int_{\pi,\sigma_1,\sigma_2} f_1(\hat\gamma_1, \dots, \hat\gamma_m |\pi, \sigma_1^2,\sigma_2^2)f(\pi)f(\sigma_1^2)f(\sigma_2^2)d\pi d\sigma_1^2 d\sigma_2^2\\
+\end{split}\\
+\tag{11}
+\begin{split}
+L_2  &amp; = Pr(\boldsymbol{\hat\gamma} |Intermediate) \\
+&amp; = \int_{\theta, \pi,\sigma_1,\sigma_2} f_2(\hat\gamma_1, \dots, \hat\gamma_m | \pi,\theta, \sigma_1^2,\sigma_2^2)f(\theta)f(\pi)f(\sigma_1^2)f(\sigma_2^2)d\theta d\pi d\sigma_1^2 d\sigma_2^2\\
+\end{split}\\
+\tag{12}
+\begin{split}
+L_3 &amp;= Pr(\boldsymbol{\hat\gamma} |allopolyploidy) \\
+&amp;= \int_{\pi,\sigma_1,\sigma_2} f_3(\hat\gamma_1, \dots, \hat\gamma
+_m|\pi, \sigma_1^2,\sigma_2^2)f(\pi)f(\sigma_1^2)f(\sigma_2^2)d\pi d\sigma_1^2 d\sigma_2^2    \\
+\end{split}
+\end{align*}\]</span></p>
+<p>Stan will provide posterior samples of the logs of <span class="math inline">\(L_1\)</span>, <span class="math inline">\(L_2\)</span>,and
+<span class="math inline">\(L_3\)</span>. We may average these posterior samples to obtain estimates of
+<span class="math inline">\(L_1\)</span>, <span class="math inline">\(L_2\)</span>, and <span class="math inline">\(L_3\)</span>. This averaging was done using the
+log-sum-exponential trick <a href="#eq:lse">(13)</a> to maintain computational stability.
+<span class="math display" id="eq:lse">\[\begin{align*}
+\tag{13}
+    LSE(x_1, x_2, \ldots, x_n) = x^* + \log(\exp(x_1-x^*)+ \ldots +\exp(x_n-x^*))
+\end{align*}\]</span>
+where <span class="math inline">\(x^* = \max\{x_1, x_2, \ldots, x_n\}\)</span>. According to Bayes’s
+theorem, we obtain the posterior probability
+<span class="math display" id="eq:P-Allo-data" id="eq:P-Pref-data" id="eq:P-Auto-data">\[\begin{align*}
+\tag{14}
+\begin{split}
+&amp;Pr(autopolyploidy|\hat\gamma_1, \dots, \hat\gamma_m) \\ 
+&amp;= \frac{\frac{1}{3}Pr(\boldsymbol{\hat\gamma}|autopolyploidy)}{\frac{1}{3}Pr(\boldsymbol{\hat\gamma}|autopolyploidy) +\frac{1}{3}Pr(\boldsymbol{\hat\gamma}|Intermediate)+\frac{1}{3}Pr(\boldsymbol{\hat\gamma}|allopolyploidy)} \\
+&amp; = \frac{\frac{1}{3}L_1}{\frac{1}{3}L_1+\frac{1}{3}L_2+\frac{1}{3}L_3} \\
+&amp; = \frac{L_1}{L_1+L_2+L_3}\\
+\end{split}\\
+\tag{15}
+\begin{split}
+Pr(Intermediate|\hat\gamma_1, \dots, \hat\gamma_m) = \frac{L_2}{L_1+L_2+L_3}\\
+\end{split}\\
+\tag{16}
+\begin{split}
+Pr(allopolyploidy|\hat\gamma_1, \dots, \hat\gamma_m) = \frac{L_3}{L_1+L_2+L_3}\\
+\end{split}\\
+\end{align*}\]</span></p>
+From Stan, we can also obtain posterior summaries of <span class="math inline">\(\theta\)</span>. Recall
+that in order to use Stan, we had to remove the discrete
+parameterization of <span class="math inline">\(\theta\)</span>. We now demonstrate how to obtain posterior
+summaries <em>with</em> the discrete parameterization using the output of Stan.
+First, we demonstrate how to obtain posterior quantiles using sample
+outputs from Stan. Denote the quantile function (inverse cdf function)
+by <span class="math inline">\(F^{-1}(p)\)</span>. Let <span class="math inline">\(\tilde{\theta}_b\)</span> be the posterior samples from
+Stan. Then we show in the Theorem <a href="#thm:quantile">2</a> how to obtain
+posterior quantiles when using prior <a href="#eq:prioro-theta">(4)</a>.
+
+<div class="theorem">
+<p><span id="thm:quantile" class="theorem"><strong>Theorem 2  </strong></span>For any given probability <span class="math inline">\(Pr(\tilde{\theta}_b \leq a^*) = q^*\)</span>, we have</p>
+<span class="math inline">\(a^*\)</span> = <span class="math inline">\(\begin{cases}  \frac{1}{3} &amp; If q^* \leq Pr(autopolyploidy|\boldsymbol{\hat\gamma})\\ F^{-1}(\frac{q^*-Pr(autopolyploidy|\boldsymbol{\hat\gamma}}{Pr(Intermediate|\boldsymbol{\hat\gamma})})  &amp;  \begin{align}  If Pr(autopolyploidy|\boldsymbol{\hat\gamma}) &lt; q^* \leq Pr(autopolyploidy|\boldsymbol{\hat\gamma})\\  + Pr(Intermediate|\boldsymbol{\hat\gamma})  \end{align} \\  1 &amp; If q^* &gt; Pr(autopolyploidy|\boldsymbol{\hat\gamma}) + Pr(Intermediate|\boldsymbol{\hat\gamma})  \end{cases}\)</span>
+</div>
+
+<div class="proof">
+<p> <span class="proof"><em>Proof. </em></span> For given probability <span class="math inline">\(Pr(\theta \leq a) = q\)</span>, the quantile is
+<span class="math inline">\(F^{-1}(q) = a\)</span>. Let <strong><em><span class="math inline">\(a^*\)</span></em></strong> be the quantile of posterior samples
+from Stan <span class="math inline">\(\tilde{\theta}_b\)</span>, then
+<span class="math inline">\(Pr(\tilde{\theta}_b \leq a^*) = q^*\)</span>.</p>
+<p>The proportion of autopolyploidy pairing behavior is
+<span class="math inline">\(Pr(autopolyploidy|\boldsymbol{\hat\gamma})\)</span>, when <span class="math inline">\(\theta\)</span> is from
+autopolyploidy, <span class="math inline">\(\theta = \frac{1}{3}\)</span></p>
+<p>The proportion of intermediate pairing behavior is
+<span class="math inline">\(Pr(Intermediate|\boldsymbol{\hat\gamma})\)</span>, when <span class="math inline">\(\theta\)</span> is from intermediate,
+<span class="math inline">\(\frac{1}{3}&lt;\theta&lt;1\)</span>.</p>
+<p>The proportion of allopolyploidy pairing behavior is
+<span class="math inline">\(Pr(allopolyploidy|\boldsymbol{\hat\gamma})\)</span>, when <span class="math inline">\(\theta\)</span> is from
+allopolyploidy, <span class="math inline">\(\theta=1\)</span>.</p>
+<p>Therefore, for given probability <span class="math inline">\(q^*\)</span>, the quantile of posterior
+samples from Stan <span class="math inline">\(\tilde{\theta}_b\)</span> is:</p>
+<ul>
+<li><p>If <span class="math inline">\(q^* \leq Pr(autopolyploidy|\boldsymbol{\hat\gamma})\)</span>,
+<span class="math inline">\(a^* = \frac{1}{3}\)</span></p></li>
+<li><p>If
+<span class="math inline">\(Pr(autopolyploidy|\boldsymbol{\hat\gamma} &lt; q^* \leq Pr(autopolyploidy|\boldsymbol{\hat\gamma}) + Pr(Intermediate|\boldsymbol{\hat\gamma})\)</span>,<br />
+we get
+$q^* = Pr(_b a^<em>) = Pr(autopolyploidy|) +Pr(Intermediate|)</em>Pr(_b&lt;a^*|Intermediate) $.<br />
+Then
+<span class="math inline">\(Pr(\tilde{\theta}_b&lt;a^*|Intermediate) = \frac{q^*-Pr(autopolyploidy|\boldsymbol{\hat\gamma})}{Pr(Intermediate|\boldsymbol{\hat\gamma})}\)</span>,
+<span class="math inline">\(a^* = F^{-1}(\frac{q^*-Pr(autopolyploidy|\boldsymbol{\hat\gamma})}{Pr(Intermediate|\boldsymbol{\hat\gamma})})\)</span></p></li>
+<li><p>If
+<span class="math inline">\(q^* &gt; Pr(autopolyploidy|\boldsymbol{\hat\gamma}) + Pr(Intermediate|\boldsymbol{\hat\gamma})\)</span>,
+<span class="math inline">\(a^* = 1\)</span></p></li>
+</ul>
+</div>
+</div>
+<div id="subsec:2.2.2" class="section level3">
+<h3>Clustering by Dip Test</h3>
+<p>Since the problem of distinguishing between autopolyploidy and other
+types of ploidy is equivalent to distinguishing between 1 and 2 clusters
+of observations, we can explore more general methods to accomplish this
+task. As our first comparison, we consider the dip test
+<span class="citation">(Hartigan, Hartigan, and others <a href="#ref-hartigan1985dip" role="doc-biblioref">1985</a>)</span>. The dip test is used to test whether the given data
+has more than one mode <span class="citation">(Hartigan, Hartigan, and others <a href="#ref-hartigan1985dip" role="doc-biblioref">1985</a>)</span>. The test statistic is called
+the “dip” statistic, denoted as <span class="math inline">\(D_n\)</span>, which measures the maximum
+difference between the empirical distribution function, and the unimodal
+distribution function that minimizes that maximum difference. The
+algorithm to calculate the dip statistics <span class="math inline">\(D_n\)</span> is shown in
+<span class="citation">Hartigan, Hartigan, and others (<a href="#ref-hartigan1985dip" role="doc-biblioref">1985</a>)</span>. The null hypothesis of the dip test is the
+distribution is uniform, which is the “worst case” unimodal
+distribution. An R package is available that computes the <span class="math inline">\(P\)</span>-value for
+this unimodal test <span class="citation">(Maechler <a href="#ref-diptestpackage" role="doc-biblioref">2016</a>)</span>.</p>
+</div>
+<div id="subsec:2.2.3" class="section level3">
+<h3>Clustering by Mclust</h3>
+<p>As our second competitor, we will consider the Mclust R package
+<span class="citation">(Scrucca et al. <a href="#ref-scrucca2016mclust" role="doc-biblioref">2016</a>)</span>. Similar as dip test, Mclust can also distinguish
+whether the given data has more than one mode. Mclust uses the normal
+mixture model <a href="#eq:GMM-normal">(17)</a>:
+<span class="math display" id="eq:GMM-normal">\[\begin{align}
+\tag{17}
+Pr\left(y \mid \lambda, \mu, \sigma \right)=
+\sum_{k=1}^K \lambda_k \, \textsf{Normal}\left(y \mid \mu_k, \sigma_k\right).
+\end{align}\]</span>
+Mclust uses information criteria, such as the BIC to figure out how many
+components should be included in the mixture. In our research,
+<span class="math inline">\(\hat\gamma_k\)</span> follows a normal mixture model. For autopolyploidy, there
+is only one component, but for allopolyploidy and intermediate behavior,
+there are two components. Based on BIC, Mclust will select the number of
+mixture component. In our research, Mclust estimates the ploidy type
+based on the estimated number of mixture: if the data are from
+autopolyploidy, there is only one mixture, otherwise, there are two
+mixtures. Therefore, we can know whether the data are from
+autopolyploidy or not.</p>
+</div>
+</div>
+</div>
+<div id="ch:3" class="section level1">
+<h1>Results</h1>
+<div id="sec:3.1" class="section level2">
+<h2>Maximum Likelihood Simulation</h2>
+<p>To test our maximum likelihood estimation procedure in Section
+<a href="#sec:2.1">2.1</a>, we ran a simulation study. We varied the following
+parameters:</p>
+<ul>
+<li><p><span class="math inline">\(N\)</span>: This is the number of offspring. We varied
+<span class="math inline">\(N \in \{25, 50, 100, 500\}\)</span>.</p></li>
+<li><p><span class="math inline">\(\ell_j\)</span>: The number of copies of in parent <span class="math inline">\(j\)</span>’s genotype. There
+are 2 copies of in parent 1 genotype, <span class="math inline">\(\ell_1 = 2\)</span>. There is 0 or 1
+copies of in parent 2 genotype, <span class="math inline">\(\ell_2 \in \{0, 1\}\)</span>.</p></li>
+<li><p><span class="math inline">\(\gamma_{1k}\)</span>: Preferential pairing parameter. We varied the true
+value of preferential pairing parameter
+<span class="math inline">\(\gamma_{1k} \in (0, 0.1, ..., 1)\)</span>.</p></li>
+</ul>
+<p>We tested each unique combination 1000 times, and got the MLE
+<span class="math inline">\(\hat\gamma_{1k}\)</span>, and evaluated our estimator by plotting the estimate
+for each simulation condition.</p>
+<p>The results are displayed in Figure <a href="#fig:mle">1</a>. These are boxplots of <span class="math inline">\(\hat\gamma_{1k}\)</span> for different sample size <span class="math inline">\(n\)</span>, different <span class="math inline">\(\ell_2\)</span>, and different true value of
+<span class="math inline">\(\gamma_{2k}\)</span>. The <span class="math inline">\(x\)</span>-axis is the number of offspring, and the <span class="math inline">\(y\)</span>-axis is the
+estimated <span class="math inline">\(\hat\gamma_{1k}\)</span>. The column facets are indexed by <span class="math inline">\(\ell_2\)</span>,
+and the row facets are indexed by <span class="math inline">\(\gamma_{1k}\)</span>, which also can be
+referred from the red dash line. The closer the median of the estimate
+is to the red dash line, the more accurate the estimate. From this plot,
+our conclusions are:</p>
+<ul>
+<li><p>The accuracy is better as <span class="math inline">\(N\)</span> increases.</p></li>
+<li><p>The mean of the estimates is around the true value of
+<span class="math inline">\(\hat\gamma_{1k}\)</span>, therefore the estimates are unbiased</p></li>
+<li><p>There is no obvious difference of estimates when <span class="math inline">\(\ell_2\)</span> is 0 or 1.</p></li>
+<li><p>When the true value is near 0 or 1, the estimates are more accurate,
+when the true value is near 0.5, the estimates are relatively
+inaccurate.</p></li>
+</ul>
+<div class="figure"><span id="fig:mle"></span>
+<img src="/thesis/2020-08-12-estimating-preferential-pairing-in-polyploids.en_files/residual_7_5.png" alt="" />
+<p class="caption">Figure 1:  Results of Maximu Likelihood Simulation</p>
+</div>
+<p>We therefore conclude that our method can accurately estimate
+<span class="math inline">\(\gamma_{1k}\)</span> at each locus. In the following section, we will show how
+to combine information across the <span class="math inline">\(\gamma_{1k}\)</span>’s to come up with a more
+accurate estimate of preferential pairing, and to identify the
+parameters.</p>
+</div>
+<div id="sec:3.2" class="section level2">
+<h2>Simulation of model based on clustering</h2>
+<p>In Section <a href="#sec:3.1">3.1</a> we demonstrated that we can consistently estimate
+<span class="math inline">\(\gamma_{1k}\)</span> at each locus. In this section, we will evaluate the the
+performance of our model-based clustering approach to estimate <span class="math inline">\(\theta\)</span>
+and distinguish between the different ploidy types. We compare our
+approach to that of dip test <span class="citation">(Hartigan, Hartigan, and others <a href="#ref-hartigan1985dip" role="doc-biblioref">1985</a>)</span> and Mclust
+<span class="citation">(Scrucca et al. <a href="#ref-scrucca2016mclust" role="doc-biblioref">2016</a>)</span>.</p>
+<div id="subsec3.2.1" class="section level3">
+<h3>Data set</h3>
+<p>We used PedigreeSim to simulate datasets and evaluate our methods
+<span class="citation">(Voorrips and Maliepaard <a href="#ref-Voorripsarticle" role="doc-biblioref">2012</a>)</span>. PedigreeSim is a software that generates simulated
+genetic marker data of individuals in pedigreed populations. We used
+PedigreeSim to generate an F1 population (full-sib progeny of two
+parents) of individuals with varying levels of ploidy and preferential
+pairing. In PedigreeSim we can vary some key parameters and build our
+simulation. For example, we can set the ploidy of an organism (even
+ploidy is supported), population type (selfings of one parent, full-sib
+progeny of two parents, etc.), sample size, and so on. We also can vary
+the properties of the chromosome, such as the length of the chromosome,
+centromere positions, the amount of preferential pairing in polyploids,
+from 0.0 (all pairwise combinations have equal probability, as in
+autopolyploids) to 1.0 (fully preferential pairing, as in
+allopolyploids), denoted as prefPairing, and the fraction of
+quadrivalents, denoted as quadrivalents. Note that in PedigreeSim,
+“prefPairing” is not the same as our definition of <span class="math inline">\(\theta\)</span> in section
+<a href="#subsec:2.2.1">2.2.1</a>. However, there is a simple correspondence between our
+value of <span class="math inline">\(\theta\)</span> and PedigreeSim’s value of prefPairing:
+<span class="math inline">\(\theta = \frac{1+2\text{prefPairing}}{3}\)</span>. we can also vary the number
+of single nucleotide polymorphisms (SNPs) in a chromosome. To build our
+genetic data set, we varied the following parameters</p>
+<ul>
+<li><p>We fixed the ploidy at 4 (tetraploids).</p></li>
+<li><p>We set the the population type to F1: Full-sib progeny of two
+parents.</p></li>
+<li><p>We varied sample size in <span class="math inline">\(\{100, 200, 300\}\)</span>.</p></li>
+<li><p>We set the length of chromosome to be 100</p></li>
+<li><p>We set the location of the centromere to be at 50 cM, the midpoint
+of the chromosome</p></li>
+<li><p>We set the preferential pairing parameter to vary in
+<span class="math inline">\(\{0.00, 0.25, 0.50, 0.75, 1.00\}\)</span>, from autoteraploidy to
+allopolyploidy.</p></li>
+<li><p>We excluded quadrivalents and only allowed for bivalent pairing.</p></li>
+<li><p>We fixed the number of SNPs to be 100.</p></li>
+</ul>
+<p>We tested each unique combination of sample size and preferential
+pairing parameter 100 times. For each iteration, we used PedigreeSim to
+generate genotype data. Then we used the MLE method in Section
+<a href="#sec:2.1">2.1</a> to estimate <span class="math inline">\(\hat\gamma\)</span>. We then clustered the
+<span class="math inline">\(\hat{\gamma}_k\)</span>’s via Stan (in Section <a href="#subsec:2.2.1">2.2.1</a>, dip test (in
+Section <a href="#subsec:2.2.2">2.2.2</a>), and Mclust (in Section <a href="#subsec:2.2.3">2.2.3</a>).</p>
+</div>
+<div id="subsec:3.2.2" class="section level3">
+<h3>Clustering results by Stan</h3>
+<p>After generating the genetic data and estimating the <span class="math inline">\(\gamma_k\)</span>’s by
+MLE, we used the model illustrated in <a href="#subsec:2.2.1">2.2.1</a> to cluster the
+<span class="math inline">\(\hat\gamma_k\)</span>’s. The results are shown in Table
+<a href="#tab:normal-results">4</a>. Note that when the true value of <span class="math inline">\(\theta\)</span> is
+between in <span class="math inline">\(\frac{1}{3}\)</span> and 1, preferential pairing exist. We can see
+that the results are accurate overall, and the over all accuracy is
+83.4%. When the true value of <span class="math inline">\(\theta\)</span> is near the boundary
+(<span class="math inline">\(\frac{1}{3}\)</span> or 1), the accuracy is lower: when the true value of
+<span class="math inline">\(\theta = \frac{1}{3}\)</span>, the accuracy is 74%, when the true value of
+<span class="math inline">\(\theta = \frac{1}{2}\)</span>, the accuracy is 83.7%, and when the true value
+of <span class="math inline">\(\theta = 1\)</span>, the accuracy is 59.3%. When the true value of <span class="math inline">\(\theta\)</span>
+is far from the boundary, the results are accurate: when the true value
+of <span class="math inline">\(\theta = \frac{2}{3}\)</span> and <span class="math inline">\(\theta = \frac{5}{6}\)</span>, the accuracy is
+100%. Therefore, our model can accurately distinguish whether the
+preferential pairing exist, and distinguish the ploidy type.</p>
+<table>
+<caption><span id="tab:normal-results">Table 4: </span> Clustering results by Stan</caption>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(Estimating\ Pairing\ Behavior\)</span></th>
+<th align="center"><span class="math inline">\(\theta = \frac{1}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{1}{2}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{2}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{5}{6}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = 1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Autopolyploidy</td>
+<td align="center">222</td>
+<td align="left">49</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">Intermediate</td>
+<td align="center">78</td>
+<td align="left">251</td>
+<td align="left">300</td>
+<td align="left">300</td>
+<td align="left">122</td>
+</tr>
+<tr class="odd">
+<td align="left">Allopolyploidy</td>
+<td align="center">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">178</td>
+</tr>
+<tr class="even">
+<td align="left">Accuracy</td>
+<td align="center">74%</td>
+<td align="left">83.7%</td>
+<td align="left">100%</td>
+<td align="left">100%</td>
+<td align="left">59.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subsec:3.2.3" class="section level3">
+<h3>Clustering results by Dip Test</h3>
+<p>Dip test can also help us to distinguish whether the data are from
+autopolyploidy pairing behavior. Based on the model mentioned in Section
+<a href="#subsec:2.2.2">2.2.2</a>, we cluster the <span class="math inline">\(\hat\gamma_k\)</span>, which are the same as
+the previous section. The results are shown in Table
+<a href="#tab:dip-results">5</a>. According to this results, the overall accuracy is
+75.1%. This model can identify autopolyploidy accurately when the data
+are from autopolyploidy pairing behavior, and the accuracy here is
+95.3%, which is more accurate than Stan method. However, this model less
+able to detect preferential pairing.</p>
+<table>
+<caption><span id="tab:dip-results">Table 5: </span>Clustering results by Dip Test</caption>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(Estimating\ Pairing\ Behavior\)</span></th>
+<th align="center"><span class="math inline">\(\theta = \frac{1}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{1}{2}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{2}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{5}{6}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Autopolyploidy</td>
+<td align="center">286</td>
+<td align="left">229</td>
+<td align="left">120</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left">Non-autopolyploidy</td>
+<td align="center">14</td>
+<td align="left">71</td>
+<td align="left">180</td>
+<td align="left">290</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subsec:3.2.4" class="section level3">
+<h3>Clustering results by Mclust</h3>
+<p>Mclust is also a method which can help us to distinguish whether the
+data are from autopolyploidy pairing behavior. Based on the model
+mentioned in the section <a href="#subsec:2.2.3">2.2.3</a>, we cluster the
+<span class="math inline">\(\hat\gamma_k\)</span>’s, which are the same as in section <a href="#subsec:3.2.2">3.2.2</a>. The
+results are shown in Table <a href="#tab:Mclust-results">6</a>. According to this
+results, the overall accuracy is 90.6%, which is much higher than dip
+test. For autopolyploidy data, the accuracy here is 89%, which is more
+accurately than Stan method. Compared with dip test, Mclust will return
+more accurate results, when the data are from non-autopolyploidy.
+However, similar as dip test, Mclust also less able to detect
+preferential pairing.</p>
+<table>
+<caption><span id="tab:Mclust-results">Table 6: </span> Clustering results by Mclust</caption>
+<thead>
+<tr class="header">
+<th align="left"><span class="math inline">\(Estimating\ Pairing\ Behavior\)</span></th>
+<th align="center"><span class="math inline">\(\theta = \frac{1}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{1}{2}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{2}{3}\)</span></th>
+<th align="left"><span class="math inline">\(\theta = \frac{5}{6}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Autopolyploidy</td>
+<td align="center">267</td>
+<td align="left">96</td>
+<td align="left">12</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">Non-autopolyploidy</td>
+<td align="center">33</td>
+<td align="left">204</td>
+<td align="left">288</td>
+<td align="left">300</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sbusec:3.2.5" class="section level3">
+<h3>Comparing three methods</h3>
+<p>To compare these three methods, we visualized the results in Figure
+<a href="#fig:clust">2</a>, and display them in tabular form in Table
+<a href="#tab:clust-accuracy">7</a>. The plot shows the accuracy (with corresponding
+95% confidence intervals based on exact binomial methods) for three
+methods: Stan, Mclust, and dip test, under different levels of sample
+size and the true value of <span class="math inline">\(\theta\)</span>. The <span class="math inline">\(x\)</span>-axis is the sample size:
+<span class="math inline">\(\{100, 200, 300\}\)</span>, and the <span class="math inline">\(y\)</span>-axis is the accuracy distinguishing the
+ploidy type. The facets index the true of <span class="math inline">\(\theta\)</span>. Each color and line
+type indicates one method (Stan, dip test, Mclust). The vertical bars
+show the 95% confidence intervals. Shorter vertical bars indicate more
+accurate results. Table <a href="#tab:clust-accuracy">7</a> shows the accuracy (with
+95% confidence intervals) for three methods under different simulation
+conditions. Note that Stan is capable of distinguishing among all three
+ploidy types, but dip test and Mclust can only distinguish whether the
+given data are from autopolyploidy or not.</p>
+<div class="figure"><span id="fig:clust"></span>
+<img src="/thesis/2020-08-12-estimating-preferential-pairing-in-polyploids.en_files/three_methods_results.png" alt="" />
+<p class="caption">Figure 2:  Results of Clustering by Three Methods</p>
+</div>
+<p>According to this plot, when the true value of <span class="math inline">\(\theta\)</span> is
+<span class="math inline">\(\frac{1}{3}\)</span>, the given data are from autopolyploidy. In this case,
+Stan method performs worse than Mclust and dip test when the sample size
+is small. When the sample size increases, the accuracy increases. For
+dip test, the accuracy is higher than Stan when the sample size is
+small. When the sample size increases, the accuracy also increases, and
+when sample size = 300, the accuracy of dip test is 100%. For Mclust,
+when the sample size is small, it has a good performance.</p>
+<p>When the given data are from intermediate pairing behavior, the results
+are slightly different. When the true value of <span class="math inline">\(\theta\)</span> is
+<span class="math inline">\(\frac{1}{2}\)</span>, Stan has the best performance when the sample size is 100
+and 200. When the sample size is 300, Mclust also performs well. Dip
+test has the worst performance. When the true value of <span class="math inline">\(\theta\)</span> is
+<span class="math inline">\(\frac{2}{3}\)</span>, Stan has the best performance, and the accuracy is 100%.
+Mclust’s accuracy can also achieve 100%, when the sample size is 200 and
+300. Dip test still has the worst performance. With increasing sample
+size, accuracy of all three methods increase or stabilize. Similar to
+the previous situation, when the true value of <span class="math inline">\(\theta\)</span> is
+<span class="math inline">\(\frac{5}{6}\)</span>, under this situation, the accuracy of both Stan and
+Mclust reaches 100%. When the sample size is 200 and 300, the accuracy
+of dip test can also reaches 100%. With increasing sample size, accuracy
+of all three methods increase or go stable.</p>
+<p>When the given data are from allopolyploidy pairing behavior, the true
+value of <span class="math inline">\(\theta\)</span> is 1. Only Stan can distinguish whether the given data
+are from allopolyploidy. When the sample size = 100, the accuracy is
+57%, when the sample size = 200, the accuracy is 63%, and when the
+sample size = 300, the accuracy is 58%. The lower accuracy maybe result
+from the boundary issue. The <span class="math inline">\(\hat{\gamma} \in [0,1]\)</span>. When true
+<span class="math inline">\(\theta\)</span> is 1, <span class="math inline">\(\hat\gamma\)</span> is close on the boundary, and MLE theory
+breaks down here. We will work on this problem in the future.</p>
+<table>
+<caption><span id="tab:clust-accuracy">Table 7: </span> Accuracy for Three Methods under Different Simulation Conditions</caption>
+<thead>
+<tr class="header">
+<th align="center">Group</th>
+<th align="center">True <span class="math inline">\(\theta\)</span></th>
+<th align="left">Sample Size</th>
+<th align="center">Method</th>
+<th align="right">Accuracy</th>
+<th align="right">Lower</th>
+<th align="right">Upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Dip Test</td>
+<td align="right">0.91</td>
+<td align="right">0.84</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Mclust</td>
+<td align="right">0.94</td>
+<td align="right">0.87</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Stan</td>
+<td align="right">0.58</td>
+<td align="right">0.48</td>
+<td align="right">0.68</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Dip Test</td>
+<td align="right">0.95</td>
+<td align="right">0.89</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Mclust</td>
+<td align="right">0.85</td>
+<td align="right">0.76</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Stan</td>
+<td align="right">0.67</td>
+<td align="right">0.57</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Dip Test</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Mclust</td>
+<td align="right">0.88</td>
+<td align="right">0.80</td>
+<td align="right">0.94</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center"><span class="math inline">\(\frac{1}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Stan</td>
+<td align="right">0.97</td>
+<td align="right">0.91</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">100</td>
+<td align="center">Dip Test</td>
+<td align="right">0.23</td>
+<td align="right">0.15</td>
+<td align="right">0.32</td>
+</tr>
+<tr class="odd">
+<td align="center">11</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">100</td>
+<td align="center">Mclust</td>
+<td align="right">0.68</td>
+<td align="right">0.58</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="even">
+<td align="center">12</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">100</td>
+<td align="center">Stan</td>
+<td align="right">0.92</td>
+<td align="right">0.85</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="center">13</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">200</td>
+<td align="center">Dip Test</td>
+<td align="right">0.16</td>
+<td align="right">0.09</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="even">
+<td align="center">14</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">200</td>
+<td align="center">Mclust</td>
+<td align="right">0.45</td>
+<td align="right">0.35</td>
+<td align="right">0.55</td>
+</tr>
+<tr class="odd">
+<td align="center">15</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">200</td>
+<td align="center">Stan</td>
+<td align="right">0.78</td>
+<td align="right">0.69</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="center">16</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">300</td>
+<td align="center">Dip Test</td>
+<td align="right">0.32</td>
+<td align="right">0.23</td>
+<td align="right">0.42</td>
+</tr>
+<tr class="odd">
+<td align="center">17</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">300</td>
+<td align="center">Mclust</td>
+<td align="right">0.91</td>
+<td align="right">0.84</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="even">
+<td align="center">18</td>
+<td align="center"><span class="math inline">\(\frac{1}{2}\)</span></td>
+<td align="left">300</td>
+<td align="center">Stan</td>
+<td align="right">0.81</td>
+<td align="right">0.72</td>
+<td align="right">0.88</td>
+</tr>
+<tr class="odd">
+<td align="center">19</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Dip Test</td>
+<td align="right">0.22</td>
+<td align="right">0.14</td>
+<td align="right">0.31</td>
+</tr>
+<tr class="even">
+<td align="center">20</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Mclust</td>
+<td align="right">0.88</td>
+<td align="right">0.80</td>
+<td align="right">0.94</td>
+</tr>
+<tr class="odd">
+<td align="center">21</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">100</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">22</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Dip Test</td>
+<td align="right">0.68</td>
+<td align="right">0.58</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="odd">
+<td align="center">23</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Mclust</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">24</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">200</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">25</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Dip Test</td>
+<td align="right">0.90</td>
+<td align="right">0.82</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="even">
+<td align="center">26</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Mclust</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">27</td>
+<td align="center"><span class="math inline">\(\frac{2}{3}\)</span></td>
+<td align="left">300</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">28</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">100</td>
+<td align="center">Dip Test</td>
+<td align="right">0.92</td>
+<td align="right">0.85</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="center">29</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">100</td>
+<td align="center">Mclust</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">30</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">100</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">31</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">200</td>
+<td align="center">Dip Test</td>
+<td align="right">0.99</td>
+<td align="right">0.95</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">32</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">200</td>
+<td align="center">Mclust</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">33</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">200</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">34</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">300</td>
+<td align="center">Dip Test</td>
+<td align="right">0.99</td>
+<td align="right">0.95</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">35</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">300</td>
+<td align="center">Mclust</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="center">36</td>
+<td align="center"><span class="math inline">\(\frac{5}{6}\)</span></td>
+<td align="left">300</td>
+<td align="center">Stan</td>
+<td align="right">1.00</td>
+<td align="right">0.96</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="center">37</td>
+<td align="center">1</td>
+<td align="left">100</td>
+<td align="center">Stan</td>
+<td align="right">0.57</td>
+<td align="right">0.47</td>
+<td align="right">0.67</td>
+</tr>
+<tr class="even">
+<td align="center">38</td>
+<td align="center">1</td>
+<td align="left">200</td>
+<td align="center">Stan</td>
+<td align="right">0.63</td>
+<td align="right">0.53</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="center">39</td>
+<td align="center">1</td>
+<td align="left">300</td>
+<td align="center">Stan</td>
+<td align="right">0.58</td>
+<td align="right">0.48</td>
+<td align="right">0.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="ch:4" class="section level1">
+<h1>Conclusion</h1>
+<p>The pairing behavior of tetraploid species was discussed in this thesis
+and we described a way to directly estimate levels preferential pairing
+at individual loci using genotype data derived from NGS data. From the
+simulation study, we demonstrated that our model can estimate the
+preferential pairing parameter <span class="math inline">\(\gamma_{jk}\)</span> accurately and distinguish
+between the three different pairing behaviors: autopolyploidy,
+intermediate, and allopolyploidy. After deriving <span class="math inline">\(\hat\gamma_j\)</span> from
+MLE, we distinguish the ploidy type via model-based clustering. When the
+given data are from autopolyploids, our Stan method exhibits great
+performance, and when the sample size is large enough, the accuracy is
+high. For example, when the given data are from autopolyploids and
+sample size is 300, the accuracy is 97%. When the given data are from
+intermediate polyploids, through our Stan method, the highest accuracy
+is 100%. However, when the given data are from allopolyploids, MLE
+theory breaks down here, since the true value of <span class="math inline">\(\gamma\)</span> is 1, but
+<span class="math inline">\(\gamma \in [0,1]\)</span>, which means that the estimate is on boundary. We
+will have more future work on this. Additionally, we also compared the
+Stan approach to that of Mclust and dip test to distinguish the ploidy
+type. These two methods can only distinguish whether the given data are
+from autopolyploidy. Compared with Stan method, the accuracy of dip test
+and Mclust is lower in most cases.</p>
+<p>However, there are still a few weaknesses with our methods. By only
+exploring tetraploids, we excluded the consideration of higher ploidy
+levels. To avoid double reduction, the situation where one gamete
+receives two copies of part of the same parental hom(oe)olog, we only
+allow for bivalent pairing, and exclude quadrivalent pairing, which will
+lead to double reduction in some cases
+<span class="citation">(Voorrips, Gort, and Vosman <a href="#ref-voorrips2011genotype" role="doc-biblioref">2011</a>; Bourke et al. <a href="#ref-doi:10.1111/tpj.13496" role="doc-biblioref">2017</a>; Zheng et al. <a href="#ref-zheng2016probabilistic" role="doc-biblioref">2016</a>)</span>.</p>
+<p>Additionally, there are some statistical and computational limitations.
+For example, the number of iterations for simulation is relatively
+small, since we limited the number of simulation iterations for
+computational reasons. Additionally, as we mentioned above, MLE breaks
+down at the boundary, which leads to poor behavior when the given data
+are from allopolyploids. For future work, we will do more research to
+figure out the boundary issue
+<span class="citation">(Marchand and Strawderman <a href="#ref-10.2307/4356296" role="doc-biblioref">2004</a>; Zwiernik <a href="#ref-zwiernik2015semialgebraic" role="doc-biblioref">2015</a>)</span>.</p>
+</div>
+<div id="reference" class="section level1 unnumbered">
+<h1>Reference</h1>
+<div id="refs" class="references hanging-indent">
+<div id="ref-blischak2018snp">
+<p>Blischak, Paul D, Laura S Kubatko, and Andrea D Wolfe. 2018. “SNP Genotyping and Parameter Estimation in Polyploids Using Low-Coverage Sequencing Data.” <em>Bioinformatics</em> 34 (3): 407–15.</p>
+</div>
+<div id="ref-doi:10.1111/tpj.13496">
+<p>Bourke, Peter M., Paul Arens, Roeland E. Voorrips, G. Danny Esselink, Carole F. S. Koning-Boucoiran, Wendy P. C. van’t Westende, Tiago Santos Leonardo, et al. 2017. “Partial Preferential Chromosome Pairing Is Genotype Dependent in Tetraploid Rose.” <em>The Plant Journal</em> 90 (2): 330–43. <a href="https://doi.org/10.1111/tpj.13496">https://doi.org/10.1111/tpj.13496</a>.</p>
+</div>
+<div id="ref-brent1973algorithms">
+<p>Brent, Richard P. 1973. “Algorithms for Minimization Without Derivatives, Chap. 4.” Prentice-Hall Englewood Cliffs, NJ, USA.</p>
+</div>
+<div id="ref-cao2004correct">
+<p>Cao, Dachuang, Thomas C Osborn, and Rebecca W Doerge. 2004. “Correct Estimation of Preferential Chromosome Pairing in Autotetraploids.” <em>Genome Research</em> 14 (3): 459–62.</p>
+</div>
+<div id="ref-casella2002statistical">
+<p>Casella, G., and R. L. Berger. 2002. <em>Statistical Inference</em>. Duxbury Advanced Series in Statistics and Decision Sciences. Thomson Learning. <a href="https://books.google.com/books?id=0x\_vAAAAMAAJ">https://books.google.com/books?id=0x\_vAAAAMAAJ</a>.</p>
+</div>
+<div id="ref-clark2019polyrad">
+<p>Clark, Lindsay V, Alexander E Lipka, and Erik J Sacks. 2019. “PolyRAD: Genotype Calling with Uncertainty from Sequencing Data in Polyploids and Diploids.” <em>G3: Genes, Genomes, Genetics</em> 9 (3): 663–73.</p>
+</div>
+<div id="ref-coward2014size">
+<p>Coward, Jermaine, and Angus Harding. 2014. “Size Does Matter: Why Polyploid Tumor Cells Are Critical Drug Targets in the War on Cancer.” <em>Frontiers in Oncology</em> 4: 123.</p>
+</div>
+<div id="ref-gerard2019priors">
+<p>Gerard, David, and Luís Felipe Ventorim Ferrão. 2019. “Priors for genotyping polyploids.” <em>Bioinformatics</em> 36 (6): 1795–1800. <a href="https://doi.org/10.1093/bioinformatics/btz852">https://doi.org/10.1093/bioinformatics/btz852</a>.</p>
+</div>
+<div id="ref-gerard2018genotyping">
+<p>Gerard, David, Luís Felipe Ventorim Ferrão, Antonio Augusto Franco Garcia, and Matthew Stephens. 2018. “Genotyping Polyploids from Messy Sequencing Data.” <em>Genetics</em> 210 (3): 789–807. <a href="https://doi.org/10.1534/genetics.118.301468">https://doi.org/10.1534/genetics.118.301468</a>.</p>
+</div>
+<div id="ref-hartigan1985dip">
+<p>Hartigan, John A, Pamela M Hartigan, and others. 1985. “The Dip Test of Unimodality.” <em>The Annals of Statistics</em> 13 (1): 70–84.</p>
+</div>
+<div id="ref-khidir1993ploy">
+<p>Hilu, K. W. 1993. “Polyploidy and the Evolution of Domesticated Plants.” <em>American Journal of Botany</em> 80 (12): 1494–9. <a href="http://www.jstor.org/stable/2445679">http://www.jstor.org/stable/2445679</a>.</p>
+</div>
+<div id="ref-joly2006evo">
+<p>Joly, Simon, Julian Starr, Walter Lewis, and Anne Bruneau. 2006. “Polyploid and Hybrid Evolution in Roses East of the Rocky Mountains.” <em>American Journal of Botany</em> 93 (March): 412–25. <a href="https://doi.org/10.3732/ajb.93.3.412">https://doi.org/10.3732/ajb.93.3.412</a>.</p>
+</div>
+<div id="ref-diptestpackage">
+<p>Maechler, Martin. 2016. <em>Diptest: Hartigan’s Dip Test Statistic for Unimodality - Corrected</em>. <a href="https://CRAN.R-project.org/package=diptest">https://CRAN.R-project.org/package=diptest</a>.</p>
+</div>
+<div id="ref-10.2307/4356296">
+<p>Marchand, Eric, and William E. Strawderman. 2004. “Estimation in Restricted Parameter Spaces: A Review.” <em>Lecture Notes-Monograph Series</em> 45: 21–44. <a href="http://www.jstor.org/stable/4356296">http://www.jstor.org/stable/4356296</a>.</p>
+</div>
+<div id="ref-mason2017polyploidy">
+<p>Mason, Annaliese S. 2017. <em>Polyploidy and Hybridization for Crop Improvement</em>. CRC Press.</p>
+</div>
+<div id="ref-otto2000polyploid">
+<p>Otto, Sarah P, and Jeannette Whitton. 2000. “Polyploid Incidence and Evolution.” <em>Annual Review of Genetics</em> 34 (1): 401–37.</p>
+</div>
+<div id="ref-scrucca2016mclust">
+<p>Scrucca, Luca, Michael Fop, T Brendan Murphy, and Adrian E Raftery. 2016. “Mclust 5: Clustering, Classification and Density Estimation Using Gaussian Finite Mixture Models.” <em>The R Journal</em> 8 (1): 289.</p>
+</div>
+<div id="ref-stan2018">
+<p>Stan Development Team. 2018. “Stan Modeling Language Users Guide and Reference Manual, Version 2.18.0.” <a href="http://mc-stan.org/">http://mc-stan.org/</a>.</p>
+</div>
+<div id="ref-Rstan">
+<p>———. 2020. “RStan: The R Interface to Stan.” <a href="http://mc-stan.org/">http://mc-stan.org/</a>.</p>
+</div>
+<div id="ref-doi:10.1139/g94-149">
+<p>Sybenga, J. 1994. “Preferential Pairing Estimates from Multivalent Frequencies in Tetraploids.” <em>Genome</em> 37 (6): 1045–55. <a href="https://doi.org/10.1139/g94-149">https://doi.org/10.1139/g94-149</a>.</p>
+</div>
+<div id="ref-voorrips2011genotype">
+<p>Voorrips, Roeland E, Gerrit Gort, and Ben Vosman. 2011. “Genotype Calling in Tetraploid Species from Bi-Allelic Marker Data Using Mixture Models.” <em>BMC Bioinformatics</em> 12 (1): 172.</p>
+</div>
+<div id="ref-Voorripsarticle">
+<p>Voorrips, Roeland, and Chris Maliepaard. 2012. “The Simulation of Meiosis in Diploid and Tetraploid Organisms Using Various Genetic Models.” <em>BMC Bioinformatics</em> 13 (September): 248. <a href="https://doi.org/10.1186/1471-2105-13-248">https://doi.org/10.1186/1471-2105-13-248</a>.</p>
+</div>
+<div id="ref-wendel2000genome">
+<p>Wendel, Jonathan F. 2000. “Genome Evolution in Polyploids.” In <em>Plant Molecular Evolution</em>, 225–49. Springer.</p>
+</div>
+<div id="ref-wu2001general">
+<p>Wu, Rongling, Maria Gallo-Meagher, Ramon C Littell, and Zhao-Bang Zeng. 2001. “A General Polyploid Model for Analyzing Gene Segregation in Outcrossing Tetraploid Species.” <em>Genetics</em> 159 (2): 869–82.</p>
+</div>
+<div id="ref-zheng2016probabilistic">
+<p>Zheng, Chaozhi, Roeland E Voorrips, Johannes Jansen, Christine A Hackett, Julie Ho, and Marco CAM Bink. 2016. “Probabilistic Multilocus Haplotype Reconstruction in Outcrossing Tetraploids.” <em>Genetics</em> 203 (1): 119–31.</p>
+</div>
+<div id="ref-zwiernik2015semialgebraic">
+<p>Zwiernik, P. 2015. <em>Semialgebraic Statistics and Latent Tree Models</em>. Chapman &amp; Hall/Crc Monographs on Statistics &amp; Applied Probability. CRC Press. <a href="https://books.google.com/books?id=YdWYCgAAQBAJ">https://books.google.com/books?id=YdWYCgAAQBAJ</a>.</p>
+</div>
+</div>
+</div>

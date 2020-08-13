@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Recent &amp; Upcoming Talks | Academic</title>
+    <title>Recent &amp; Upcoming Talks | Ruiqi Sun</title>
     <link>/talk/</link>
       <atom:link href="/talk/index.xml" rel="self" type="application/rss+xml" />
     <description>Recent &amp; Upcoming Talks</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 12 Apr 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Recent &amp; Upcoming Talks</title>
@@ -13,24 +13,48 @@
     </image>
     
     <item>
-      <title>Example Talk</title>
-      <link>/talk/example/</link>
-      <pubDate>Sat, 01 Jun 2030 13:00:00 +0000</pubDate>
-      <guid>/talk/example/</guid>
-      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;div&gt;
-    Click on the &lt;strong&gt;Slides&lt;/strong&gt; button above to view the built-in slides feature.
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;p&gt;Slides can be added in a few ways:&lt;/p&gt;
+      <title>DC Pull-Over Analysis</title>
+      <link>/talk/dc-pull-over/</link>
+      <pubDate>Sun, 12 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/talk/dc-pull-over/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;We are analyzing Stop Data Report from Metropolitan Police Department. We visualized the data and made it easy to understand for readers to absorb information. The data we use is Stop data from July 22 to December 29 (161 days, 23 weeks).&lt;/p&gt;
+&lt;p&gt;In our shiny app, one could find 5 tabs:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Create&lt;/strong&gt; slides using Academic&amp;rsquo;s 
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content/#create-slides&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;em&gt;Slides&lt;/em&gt;&lt;/a&gt; feature and link using &lt;code&gt;slides&lt;/code&gt; parameter in the front matter of the talk file&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Upload&lt;/strong&gt; an existing slide deck to &lt;code&gt;static/&lt;/code&gt; and link using &lt;code&gt;url_slides&lt;/code&gt; parameter in the front matter of the talk file&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Embed&lt;/strong&gt; your slides (e.g. Google Slides) or presentation video on this page using 
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/writing-markdown-latex/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;shortcodes&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Explore Variable&lt;/p&gt;
+&lt;p&gt;Readers could choose variables and see the relationship between the variable of select and the number of counts(being pulled over). In addition, we also provide two options for you. One could choose to view the total case of selected variable or could choose to view the daily cases.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Explore Time Duration&lt;/p&gt;
+&lt;p&gt;Again, Readers could choose variables. Furthermore, we provided a box-plot to show the relationship between the selected variable and log_stop_duration_minutes. One could find out the distribution of each category of selected variables. Readers could also see the results of anova table (partialy), which shouw the test results about comparing the average duration time in different groups.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Pull-Over Map&lt;/p&gt;
+&lt;p&gt;We provided a map of DC and used shadow to present how frequently polices will pull over drivers on average in seven Police District (defined by DC Metropolitan Police Department). The darker the color, polices will pull-over more frequently. Here, we provide two options: One could choose to view the map by weekday or by hourly.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Spreadsheet&lt;/p&gt;
+&lt;p&gt;Here is the data set we found from &lt;a href=&#34;https://mpdc.dc.gov/node/1464816&#34; class=&#34;uri&#34;&gt;https://mpdc.dc.gov/node/1464816&lt;/a&gt;. Readers could find specific row if you want to.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Further talk details can easily be added to this page using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+&lt;iframe height=&#34;800&#34; width=&#34;800&#34; frameborder=&#34;no&#34; src=&#34;https://rs9595.shinyapps.io/test2/&#34;&gt;
+&lt;/iframe&gt;
+&lt;div id=&#34;section-reference&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;p&gt;1, Alex, &amp;amp; jdharrison. (2014, April 27). Outputting multiple lines of text with renderText() in R shiny. Stack Overflow.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/questions/23233497/outputting-multiple-lines-of-text-with-rendertext-in-r-shiny&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/questions/23233497/outputting-multiple-lines-of-text-with-rendertext-in-r-shiny&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;2, leaflet for R – Choropleths.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://rstudio.github.io/leaflet/choropleths.html&#34; class=&#34;uri&#34;&gt;https://rstudio.github.io/leaflet/choropleths.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;3, Parker, E. COVID-19 tracker.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://shiny.rstudio.com/gallery/covid19-tracker.html&#34; class=&#34;uri&#34;&gt;https://shiny.rstudio.com/gallery/covid19-tracker.html&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;4, Soltoff, B. (2020, April 10). Drawing interactive maps with Leaflet.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://cfss.uchicago.edu/notes/leaflet/&#34; class=&#34;uri&#34;&gt;https://cfss.uchicago.edu/notes/leaflet/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;5, warship, &amp;amp; DeanAttali. (2017, February 5). Create URL hyperlink in R Shiny? Stack Overflow.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/questions/42047422/create-url-hyperlink-in-r-shiny&#34; class=&#34;uri&#34;&gt;https://stackoverflow.com/questions/42047422/create-url-hyperlink-in-r-shiny&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;section-data-sources&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data Sources:&lt;/h2&gt;
+&lt;p&gt;1, Police Districts. (2019, June 25).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://opendata.dc.gov/datasets/d2a63e5246ff41bdaca8ea9be95c8a4b_9/data&#34; class=&#34;uri&#34;&gt;https://opendata.dc.gov/datasets/d2a63e5246ff41bdaca8ea9be95c8a4b_9/data&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;2, Stop Data Report: 2020. Stop Data Report: 2020. (2020, March 4).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://mpdc.dc.gov/node/1464816&#34; class=&#34;uri&#34;&gt;https://mpdc.dc.gov/node/1464816&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
 </description>
     </item>
     

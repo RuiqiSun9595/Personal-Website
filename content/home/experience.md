@@ -32,7 +32,36 @@ date_format = "Jan 2006"
   * Produced reports for different stakeholders and suggested various recommendations for action to Dean's office.
   * Used Tableau to achieve data visualization, explore enrollment situation by district, academic ability, etc.
   * Set a specific timeline for each month and cooperated with American University Office of Graduate Studies. 
-  
 """
 
+[[experience]]
+  title = "Teaching Assistant"
+  company = "American University"
+  company_url = ""
+  location = "Washington, DC"
+  date_start = "2020-01-13"
+  date_end = "2020-08-07"
+  description = """
+  Responsibilities include:
+  
+  * Advised and helped students to analyze various statistical methods, provided homework solutions weekly.
+  * Utilized LaTeX to generate handouts and create diagnostic plots by using visualization packages in R. 
+"""
+
+[[experience]]
+  title = "Conference Assistant"
+  company = "The 36th Annual Quality and Productivity Research Conference"
+  company_url = ""
+  location = "Washington, DC"
+  date_start = "2019-06-10"
+  date_end = "2019-06-13"
+  description = """
+  Responsibilities include:
+  
+  * Assisted with registration, check-in and checkout processes for all conference members.
+  * Maintained themed and informational bulletin boards.
+  * Be available to conference participants; respond to needs and concerns, make referrals when necessary
+"""
+  
+  
 +++

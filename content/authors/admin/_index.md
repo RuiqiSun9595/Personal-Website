@@ -36,4 +36,6 @@ user_groups:
 - Visitors
 ---
 
-Ruiqi Sun is a graduate student in MS Statistics and is very proficient with statistical modeling and related software. She was a Graduate Research Assistant at American University and did a research project in Data Analytics for 2019-2020. Ruiqi is very passionate of working with data and is interested in the field of data analytics. She received her BS in Statistics from Chongqing University, a very selective university that is part of the project of building world-class universities in China. She is fluent in Mandarin and English, and in her spare time, likes to watch movies and hiking.
+Hello! I am Ruiqi Sun and I just graduated with an MS in Statistics at American University. For my master's thesis, I developed statistical procedures to study the meiotic behavior of polyploid organisms (such as blueberries and potatoes) using next-generation sequencing data. I also had a research assistantship where I developed statistical models to predict enrollment behaviors of potential AU students based on financial aid allocations. Before coming to AU, I received a BS in Statistics from Chongqing University, a selective university in China. For my bachelor's thesis, I developed regression models for predicting real estate prices. I am fluent in both Mandarin and English, and in my free time,  I like to watch movies and go hiking.
+
+This website contains some of my work, a list of my skills and relevant coursework, and some other information about me!

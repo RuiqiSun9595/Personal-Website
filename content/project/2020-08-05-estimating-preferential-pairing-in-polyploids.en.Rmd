@@ -1,7 +1,7 @@
 ---
 title: Estimating Preferential Pairing in Polyploids
 author: Ruiqi Sun
-date: '2020-08-05'
+date: '2020-07-17'
 slug: estimating-preferential-pairing-in-polyploids
 categories:
   - R

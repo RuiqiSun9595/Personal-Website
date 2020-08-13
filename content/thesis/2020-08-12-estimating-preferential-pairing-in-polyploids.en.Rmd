@@ -1,16 +1,16 @@
 ---
 title: Estimating Preferential Pairing in Polyploids
 author: Ruiqi Sun
-date: '2020-08-05'
+date: '2020-08-12'
 slug: estimating-preferential-pairing-in-polyploids
 categories:
   - R
 tags:
-  - Academic 
+  - Statistics
 subtitle: ''
 summary: 'Polyploids (organisms with more than two copies of each chromosome) exhibit more complicated meiotic behavior compared to diploids. In diploids, two homologous chromosomes pair and separate during meiosis. However, multiple pairing configurations between chromosomes are possible in polyploids. This pairing behavior characterizes import classes of polyploids. With the growth of next-generation sequencing (NGS), non-model organisms are being studied and their meiotic behavior is of interest. However, no method currently exists to estimate interpretable parameters that characterize the degree and strength of preferential pairing during meiosis directly from genotypes, which are typical outputs of NGS data. In this thesis, we describe a way to directly estimate levels preferential pairing at individual loci using genotype data derived from NGS data. However, data from one locus are not able to identify interpretable parameters of interest. Thus, we provide a way to combine information between loci using a novel model-based clustering approach to obtain parameter estimates that are interpretable for the scientific community. We evaluate our methods on simulated data.'
 authors: []
-lastmod: '2020-08-05T23:47:29-04:00'
+lastmod: '2020-08-12T12:37:55-04:00'
 featured: no
 image:
   caption: ''
@@ -649,11 +649,8 @@ our conclusions are:
 -   When the true value is near 0 or 1, the estimates are more accurate,
     when the true value is near 0.5, the estimates are relatively
     inaccurate.
-    
-![(\#fig:mle) Results of Maximu Likelihood Simulation](/project/2020-08-05-estimating-preferential-pairing-in-polyploids.en_files/residual_7_5.png)
 
-
-
+![(\#fig:mle) Results of Maximu Likelihood Simulation](/thesis/2020-08-12-estimating-preferential-pairing-in-polyploids.en_files/residual_7_5.png)
 
 
 We therefore conclude that our method can accurately estimate
@@ -811,7 +808,7 @@ conditions. Note that Stan is capable of distinguishing among all three
 ploidy types, but dip test and Mclust can only distinguish whether the
 given data are from autopolyploidy or not.
 
-![(\#fig:clust) Results of Clustering by Three Methods](/project/2020-08-05-estimating-preferential-pairing-in-polyploids.en_files/three_methods_results.png)
+![(\#fig:clust) Results of Clustering by Three Methods](/thesis/2020-08-12-estimating-preferential-pairing-in-polyploids.en_files/three_methods_results.png)
 
 
 According to this plot, when the true value of $\theta$ is
