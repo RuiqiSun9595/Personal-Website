@@ -22,9 +22,17 @@ subtitle = ""
   filter_default = 0
   
   [[content.filter_button]]
+    name = "All"
+    tag = "*"
+  
+  [[content.filter_button]]
     name = "Data Visualization"
     tag = "Data visualization"  
     
+    
+  [[content.filter_button]]
+    name = "Machine Learning"
+    tag = "Machine Learning"
   
 
 [design]
