@@ -3,13 +3,63 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/tag/academic/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/authors/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
   </url>
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/est/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/master-thesis/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/r/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/ruiqi-sun/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/stan/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/statistics/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-08-15T16:51:42-04:00</lastmod>
   </url>
   
   <url>
@@ -23,42 +73,12 @@
   </url>
   
   <url>
-    <loc>/project/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/category/r/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/author/ruiqi-sun/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/author/shijin-gai/</loc>
     <lastmod>2020-08-14T23:30:26-04:00</lastmod>
   </url>
   
   <url>
     <loc>/category/shiny-app/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tag/statistics/</loc>
-    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-08-14T23:30:26-04:00</lastmod>
   </url>
   
@@ -93,26 +113,6 @@
   </url>
   
   <url>
-    <loc>/tag/academic/</loc>
-    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tag/clustering/</loc>
-    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/publication/conference-paper/</loc>
-    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/publication/</loc>
-    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/slides/</loc>
     <lastmod>2020-07-17T12:00:00+00:00</lastmod>
   </url>
@@ -138,6 +138,10 @@
   
   <url>
     <loc>/publication_types/</loc>
+  </url>
+  
+  <url>
+    <loc>/publication/</loc>
   </url>
   
   <url>
