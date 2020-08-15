@@ -4,10 +4,10 @@
 
 widget = "portfolio"  # See https://sourcethemes.com/academic/docs/page-builder/
 headless = true  # This file represents a page section.
-active = false  # Activate this widget? true/false
+active = true  # Activate this widget? true/false
 weight = 100  # Order that this section will appear.
 
-title = "Recent Publications"
+title = "Thesis"
 subtitle = ""
 
 [content]
@@ -67,6 +67,3 @@ subtitle = ""
  css_class = ""
 +++
 
-{{% alert note %}}
-Quickly discover relevant content by [filtering publications]({{< ref "/publication/_index.md" >}}).
-{{% /alert %}}
