@@ -2,36 +2,46 @@
 title: How to cross-referring a hand-made table in markdown
 author: Ruiqi Sun
 date: '2020-08-06'
-slug: how-to-cross-referring-a-hand-made-table-in-markdown
+summary: 'Tips for markdown.'
 categories:
   - R
+  - Markdown
 tags:
   - Tips
-subtitle: ''
-summary: ''
-authors: []
+  - Markdown
+slug: how-to-cross-referring-a-hand-made-table-in-markdown
 lastmod: '2020-08-06T12:23:47-04:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
-projects: []
 ---
 
 To to cross-referring a hand-made table like this:
 
-   $\boldsymbol m_{ij}$   $Pr(z_{ij} = 0)$   $Pr(z_{ij} = 1)$   $Pr(z_{ij} = 2)$     
-  ---------------------- ------------------ ------------------ ------------------ 
-    (2, 0, 0)              1                  0                  0             
-    (1, 1, 0)             0.5                0.5                 0             
-    (1, 0, 1)              0                  1                  0             
-    (0, 2, 0)              0.25               0.5                0.25           
-    (0, 1, 1)               0                 0.5                0.5            
-    (0, 0, 2)              0                  0                  1  
+
+      $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
+     ---------------------- ---------------- ---------------- ---------------- 
+       (2, 0, 0)              1                  0                  0             
+       (1, 1, 0)             0.5                0.5                 0             
+       (1, 0, 1)              0                  1                  0             
+       (0, 2, 0)              0.25               0.5                0.25           
+       (0, 1, 1)               0                 0.5                0.5            
+       (0, 0, 2)              0                  0                  1  
+
+    Table: (\#tab:label) table name
+
+You chould add `(\#tab:label)`before the table name, and use `\@ref(tab:label)`to refer the table \@ref(tab:label).
+
+  $\boldsymbol m_{ij}$   $Pr(z_{ij} = 0)$   $Pr(z_{ij} = 1)$   $Pr(z_{ij} = 2)$     
+ ---------------------- ------------------ ------------------ ------------------ 
+       (2, 0, 0)              1                  0                  0             
+       (1, 1, 0)             0.5                0.5                 0             
+       (1, 0, 1)              0                  1                  0             
+       (0, 2, 0)              0.25               0.5                0.25           
+       (0, 1, 1)               0                 0.5                0.5            
+       (0, 0, 2)              0                  0                  1  
 
 Table: (\#tab:label) table name
-
-use `\@ref(tab:label)`to refer the table \@ref(tab:label).
-
 

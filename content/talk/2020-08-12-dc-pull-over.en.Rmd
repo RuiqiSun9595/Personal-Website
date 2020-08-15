@@ -1,8 +1,10 @@
 ---
 title: DC Pull-Over Analysis
 author: Ruiqi Sun
+date: '2020-04-12'
 categories:
   - R
+  - Shiny app
 tags:
   - Data visualization
 slug: dc-pull-over
@@ -13,9 +15,8 @@ image:
   caption: ''
   focal_point: ''
   preview_only: no
-date: "2020-04-12"
-date_end: "2030-05-01"
-summary: "We are analyzing Stop Data Report from DC Metropolitan Police Department, and visualizing the data and made it easy to understand for readers to absorb information."
+date_end: '2030-05-01'
+summary: "We are analyzing Stop Data Report from DC Metropolitan Police Department, and visualizing the data and made it easy to understand for readers to absorb information." 
 ---
 ```{r echo = F, message=FALSE, warning=FALSE}
 #install.packages("widgetframe")

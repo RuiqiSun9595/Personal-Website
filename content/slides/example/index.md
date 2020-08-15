@@ -1,163 +1,207 @@
 ---
 authors: []
 categories: []
-date: "2019-02-05T00:00:00Z"
+date: "2020-07-17T12:00:00Z"
 slides:
   highlight_style: dracula
   theme: black
-summary: An introduction to using Academic's Slides feature.
+summary: An summary of Estimating Preferential Pairing in Polyploids.
 tags: []
 title: Slides
 ---
 
-# Create slides in Markdown with Academic
+{{< slide background-image = "./pre_draft_7_21_1.jpeg" >}}
 
-[Academic](https://sourcethemes.com/academic/) | [Documentation](https://sourcethemes.com/academic/docs/managing-content/#create-slides)
-
----
-
-## Features
-
-- Efficiently write slides in Markdown
-- 3-in-1: Create, Present, and Publish your slides
-- Supports speaker notes
-- Mobile friendly slides
 
 ---
 
-## Controls
+{{< slide background-image = "./pre_draft_7_21_2.jpeg" >}}
 
-- Next: `Right Arrow` or `Space`
-- Previous: `Left Arrow`
-- Start: `Home`
-- Finish: `End`
-- Overview: `Esc`
-- Speaker notes: `S`
-- Fullscreen: `F`
-- Zoom: `Alt + Click`
-- [PDF Export](https://github.com/hakimel/reveal.js#pdf-export): `E`
 
 ---
 
-## Code Highlighting
+{{< slide background-image = "./pre_draft_7_21_3.jpeg" >}}
 
-Inline code: `variable`
-
-Code block:
-```python
-porridge = "blueberry"
-if porridge == "blueberry":
-    print("Eating...")
-```
 
 ---
 
-## Math
+{{< slide background-image = "./pre_draft_7_21_4.jpeg" >}}
 
-In-line math: $x + y = z$
-
-Block math:
-
-$$
-f\left( x \right) = \;\frac{{2\left( {x + 4} \right)\left( {x - 4} \right)}}{{\left( {x + 4} \right)\left( {x + 1} \right)}}
-$$
 
 ---
 
-## Fragments
+{{< slide background-image = "./pre_draft_7_21_5.jpeg" >}}
 
-Make content appear incrementally
-
-```
-{{%/* fragment */%}} One {{%/* /fragment */%}}
-{{%/* fragment */%}} **Two** {{%/* /fragment */%}}
-{{%/* fragment */%}} Three {{%/* /fragment */%}}
-```
-
-Press `Space` to play!
-
-{{% fragment %}} One {{% /fragment %}}
-{{% fragment %}} **Two** {{% /fragment %}}
-{{% fragment %}} Three {{% /fragment %}}
 
 ---
 
-A fragment can accept two optional parameters:
+{{< slide background-image = "./pre_draft_7_21_6.jpeg" >}}
 
-- `class`: use a custom style (requires definition in custom CSS)
-- `weight`: sets the order in which a fragment appears
 
 ---
 
-## Speaker Notes
+{{< slide background-image = "./pre_draft_7_21_7.jpeg" >}}
 
-Add speaker notes to your presentation
-
-```markdown
-{{%/* speaker_note */%}}
-- Only the speaker can read these notes
-- Press `S` key to view
-{{%/* /speaker_note */%}}
-```
-
-Press the `S` key to view the speaker notes!
-
-{{< speaker_note >}}
-- Only the speaker can read these notes
-- Press `S` key to view
-{{< /speaker_note >}}
 
 ---
 
-## Themes
+{{< slide background-image = "./pre_draft_7_21_8.jpeg" >}}
 
-- black: Black background, white text, blue links (default)
-- white: White background, black text, blue links
-- league: Gray background, white text, blue links
-- beige: Beige background, dark text, brown links
-- sky: Blue background, thin dark text, blue links
 
 ---
 
-- night: Black background, thick white text, orange links
-- serif: Cappuccino background, gray text, brown links
-- simple: White background, black text, blue links
-- solarized: Cream-colored background, dark green text, blue links
+{{< slide background-image = "./pre_draft_7_21_9.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_10.jpeg" >}}
+
 
 ---
 
 {{< slide background-image="/media/boards.jpg" >}}
 
-## Custom Slide
+{{< slide background-image = "./pre_draft_7_21_11.jpeg" >}}
 
-Customize the slide style and background
-
-```markdown
-{{</* slide background-image="/media/boards.jpg" */>}}
-{{</* slide background-color="#0000FF" */>}}
-{{</* slide class="my-style" */>}}
-```
 
 ---
 
-## Custom CSS Example
+{{< slide background-image = "./pre_draft_7_21_12.jpeg" >}}
 
-Let's make headers navy colored.
-
-Create `assets/css/reveal_custom.css` with:
-
-```css
-.reveal section h1,
-.reveal section h2,
-.reveal section h3 {
-  color: navy;
-}
-```
 
 ---
 
-# Questions?
+{{< slide background-image = "./pre_draft_7_21_13.jpeg" >}}
 
-[Ask](https://spectrum.chat/academic)
 
-[Documentation](https://sourcethemes.com/academic/docs/managing-content/#create-slides)
+---
+
+{{< slide background-image = "./pre_draft_7_21_14.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_15.jpeg" >}}
+
+
+---
+{{< slide background-image = "./pre_draft_7_21_16.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_17.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_18.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_19.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_20.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_21.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_22.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_23.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_24.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_25.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_26.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_27.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_28.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_29.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_30.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_31.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_32.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_33.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_34.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_35.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_36.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_37.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_38.jpeg" >}}
+
+
+---
+
+{{< slide background-image = "./pre_draft_7_21_39.jpeg" >}}
+
+
+---

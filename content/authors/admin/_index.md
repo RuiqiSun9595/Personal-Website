@@ -23,12 +23,12 @@ social:
 - icon: envelope
   icon_pack: fas
   link: '#contact'
-- icon: twitter
+- icon: linkedin
   icon_pack: fab
-  link: https://twitter.com/GeorgeCushen
+  link: https://www.linkedin.com/in/ruiqi-rickie-sun-009790186/
 - icon: github
   icon_pack: fab
-  link: https://github.com/gcushen
+  link: https://github.com/RuiqiSun9595
 superuser: true
 title: Ruiqi Sun
 user_groups:

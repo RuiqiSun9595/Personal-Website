@@ -2,27 +2,37 @@
 title: How to cross-referring a hand-made table in markdown
 author: Ruiqi Sun
 date: '2020-08-06'
-slug: how-to-cross-referring-a-hand-made-table-in-markdown
+summary: 'Tips for markdown.'
 categories:
   - R
+  - Markdown
 tags:
   - Tips
-subtitle: ''
-summary: ''
-authors: []
+  - Markdown
+slug: how-to-cross-referring-a-hand-made-table-in-markdown
 lastmod: '2020-08-06T12:23:47-04:00'
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
-projects: []
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>To to cross-referring a hand-made table like this:</p>
+<pre><code>  $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
+ ---------------------- ---------------- ---------------- ---------------- 
+   (2, 0, 0)              1                  0                  0             
+   (1, 1, 0)             0.5                0.5                 0             
+   (1, 0, 1)              0                  1                  0             
+   (0, 2, 0)              0.25               0.5                0.25           
+   (0, 1, 1)               0                 0.5                0.5            
+   (0, 0, 2)              0                  0                  1  
+
+Table: (\#tab:label) table name</code></pre>
+<p>You chould add <code>(\#tab:label)</code>before the table name, and use <code>\@ref(tab:label)</code>to refer the table <a href="#tab:label">1</a>.</p>
 <table>
 <caption><span id="tab:label">Table 1: </span> table name</caption>
 <thead>
@@ -72,4 +82,3 @@ projects: []
 </tr>
 </tbody>
 </table>
-<p>use <code>\@ref(tab:label)</code>to refer the table <a href="#tab:label">1</a>.</p>

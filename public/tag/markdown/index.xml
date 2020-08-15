@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Markdown | Ruiqi Sun</title>
+    <link>/tag/markdown/</link>
+      <atom:link href="/tag/markdown/index.xml" rel="self" type="application/rss+xml" />
+    <description>Markdown</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 06 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Markdown</title>
+      <link>/tag/markdown/</link>
+    </image>
+    
+    <item>
+      <title>How to cross-referring a hand-made table in markdown</title>
+      <link>/post/how-to-cross-referring-a-hand-made-table-in-markdown/</link>
+      <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
+      <guid>/post/how-to-cross-referring-a-hand-made-table-in-markdown/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;To to cross-referring a hand-made table like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
+ ---------------------- ---------------- ---------------- ---------------- 
+   (2, 0, 0)              1                  0                  0             
+   (1, 1, 0)             0.5                0.5                 0             
+   (1, 0, 1)              0                  1                  0             
+   (0, 2, 0)              0.25               0.5                0.25           
+   (0, 1, 1)               0                 0.5                0.5            
+   (0, 0, 2)              0                  0                  1  
+
+Table: (\#tab:label) table name&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You chould add &lt;code&gt;(\#tab:label)&lt;/code&gt;before the table name, and use &lt;code&gt;\@ref(tab:label)&lt;/code&gt;to refer the table &lt;a href=&#34;#tab:label&#34;&gt;1&lt;/a&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:label&#34;&gt;Table 1: &lt;/span&gt; table name&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\boldsymbol m_{ij}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Pr(z_{ij} = 0)\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Pr(z_{ij} = 1)\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(Pr(z_{ij} = 2)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(2, 0, 0)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(1, 1, 0)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.5&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.5&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(1, 0, 1)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(0, 2, 0)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.25&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.5&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.25&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(0, 1, 1)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.5&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;center&#34;&gt;(0, 0, 2)&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -3,13 +3,53 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/thesis/</loc>
-    <lastmod>2020-08-12T13:55:31-04:00</lastmod>
+    <loc>/categories/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/categories/</loc>
-    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
+    <loc>/tag/data-visualization/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/dc-pull-over/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/r/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/shiny-app/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/statistics/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-08-14T23:30:26-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/thesis/</loc>
+    <lastmod>2020-08-12T13:55:31-04:00</lastmod>
   </url>
   
   <url>
@@ -18,22 +58,17 @@
   </url>
   
   <url>
+    <loc>/tag/markdown/</loc>
+    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/markdown/</loc>
+    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/</loc>
-    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/category/r/</loc>
-    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-08-06T12:23:47-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-08-06T12:23:47-04:00</lastmod>
   </url>
   
@@ -44,22 +79,42 @@
   
   <url>
     <loc>/tag/academic/</loc>
-    <lastmod>2020-08-05T23:47:29-04:00</lastmod>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/project/estimating-preferential-pairing-in-polyploids/</loc>
-    <lastmod>2020-08-05T23:47:29-04:00</lastmod>
+    <loc>/authors/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/project/</loc>
-    <lastmod>2020-08-05T23:47:29-04:00</lastmod>
+    <loc>/tag/clustering/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/tag/data-visualization/</loc>
-    <lastmod>2020-04-12T00:00:00+00:00</lastmod>
+    <loc>/publication/conference-paper/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/author/ruiqi-sun/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/slides/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/slides/example/</loc>
+    <lastmod>2020-07-17T12:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -73,16 +128,6 @@
   </url>
   
   <url>
-    <loc>/slides/</loc>
-    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/slides/example/</loc>
-    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/privacy/</loc>
     <lastmod>2018-06-28T00:00:00+01:00</lastmod>
   </url>
@@ -93,23 +138,11 @@
   </url>
   
   <url>
-    <loc>/authors/</loc>
-  </url>
-  
-  <url>
     <loc>/courses/</loc>
   </url>
   
   <url>
     <loc>/publication_types/</loc>
-  </url>
-  
-  <url>
-    <loc>/publication/</loc>
-  </url>
-  
-  <url>
-    <loc>/author/ruiqi-sun/</loc>
   </url>
   
   <url>

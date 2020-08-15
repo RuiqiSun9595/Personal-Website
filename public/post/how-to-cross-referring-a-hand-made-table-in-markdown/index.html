@@ -30,8 +30,7 @@
   
     
   
-  <meta name="description" content="To to cross-referring a hand-made table like this:
-Table 1:  table name\(\boldsymbol m_{ij}\)\(Pr(z_{ij} = 0)\)\(Pr(z_{ij} = 1)\)\(Pr(z_{ij} = 2)\)(2, 0, 0)100(1, 1, 0)0.">
+  <meta name="description" content="Tips for markdown.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">
@@ -253,8 +252,7 @@
   <meta property="og:site_name" content="Ruiqi Sun">
   <meta property="og:url" content="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">
   <meta property="og:title" content="How to cross-referring a hand-made table in markdown | Ruiqi Sun">
-  <meta property="og:description" content="To to cross-referring a hand-made table like this:
-Table 1:  table name\(\boldsymbol m_{ij}\)\(Pr(z_{ij} = 0)\)\(Pr(z_{ij} = 1)\)\(Pr(z_{ij} = 2)\)(2, 0, 0)100(1, 1, 0)0."><meta property="og:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png">
+  <meta property="og:description" content="Tips for markdown."><meta property="og:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png">
   <meta property="twitter:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png"><meta property="og:locale" content="en-us">
   
     
@@ -304,7 +302,7 @@
       "url": "/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png"
     }
   },
-  "description": "To to cross-referring a hand-made table like this:\n\rTable 1:  table name\r\r\\(\\boldsymbol m_{ij}\\)\r\\(Pr(z_{ij} = 0)\\)\r\\(Pr(z_{ij} = 1)\\)\r\\(Pr(z_{ij} = 2)\\)\r\r\r\r(2, 0, 0)\r1\r0\r0\r\r(1, 1, 0)\r0."
+  "description": "Tips for markdown."
 }
 </script>
 
@@ -646,7 +644,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-categories">
-    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a>, <a href="/category/markdown/">Markdown</a></span>
   
 
 </div>
@@ -679,6 +677,17 @@
 
 
 <p>To to cross-referring a hand-made table like this:</p>
+<pre><code>  $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
+ ---------------------- ---------------- ---------------- ---------------- 
+   (2, 0, 0)              1                  0                  0             
+   (1, 1, 0)             0.5                0.5                 0             
+   (1, 0, 1)              0                  1                  0             
+   (0, 2, 0)              0.25               0.5                0.25           
+   (0, 1, 1)               0                 0.5                0.5            
+   (0, 0, 2)              0                  0                  1  
+
+Table: (\#tab:label) table name</code></pre>
+<p>You chould add <code>(\#tab:label)</code>before the table name, and use <code>\@ref(tab:label)</code>to refer the table <a href="#tab:label">1</a>.</p>
 <table>
 <caption><span id="tab:label">Table 1: </span> table name</caption>
 <thead>
@@ -728,7 +737,6 @@
 </tr>
 </tbody>
 </table>
-<p>use <code>\@ref(tab:label)</code>to refer the table <a href="#tab:label">1</a>.</p>
 
     </div>
 
@@ -743,93 +751,11 @@
   
   <a class="badge badge-light" href="/tag/tips/">Tips</a>
   
+  <a class="badge badge-light" href="/tag/markdown/">Markdown</a>
+  
 </div>
 
 
-
-<div class="share-box" aria-hidden="true">
-  <ul class="share">
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="https://twitter.com/intent/tweet?url=/post/how-to-cross-referring-a-hand-made-table-in-markdown/&amp;text=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown" target="_blank" rel="noopener" class="share-btn-twitter">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </li>
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="https://www.facebook.com/sharer.php?u=/post/how-to-cross-referring-a-hand-made-table-in-markdown/&amp;t=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown" target="_blank" rel="noopener" class="share-btn-facebook">
-          <i class="fab fa-facebook"></i>
-        </a>
-      </li>
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="mailto:?subject=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown&amp;body=/post/how-to-cross-referring-a-hand-made-table-in-markdown/" target="_blank" rel="noopener" class="share-btn-email">
-          <i class="fas fa-envelope"></i>
-        </a>
-      </li>
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="https://www.linkedin.com/shareArticle?url=/post/how-to-cross-referring-a-hand-made-table-in-markdown/&amp;title=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown" target="_blank" rel="noopener" class="share-btn-linkedin">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-      </li>
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="whatsapp://send?text=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown%20/post/how-to-cross-referring-a-hand-made-table-in-markdown/" target="_blank" rel="noopener" class="share-btn-whatsapp">
-          <i class="fab fa-whatsapp"></i>
-        </a>
-      </li>
-    
-      
-      
-      
-        
-      
-      
-      
-      <li>
-        <a href="https://service.weibo.com/share/share.php?url=/post/how-to-cross-referring-a-hand-made-table-in-markdown/&amp;title=How%20to%20cross-referring%20a%20hand-made%20table%20in%20markdown" target="_blank" rel="noopener" class="share-btn-weibo">
-          <i class="fab fa-weibo"></i>
-        </a>
-      </li>
-    
-  </ul>
-</div>
 
 
 
@@ -898,8 +824,8 @@
       
     
     <li>
-      <a href="https://twitter.com/GeorgeCushen" target="_blank" rel="noopener">
-        <i class="fab fa-twitter"></i>
+      <a href="https://www.linkedin.com/in/ruiqi-rickie-sun-009790186/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
       </a>
     </li>
   
@@ -915,7 +841,7 @@
       
     
     <li>
-      <a href="https://github.com/gcushen" target="_blank" rel="noopener">
+      <a href="https://github.com/RuiqiSun9595" target="_blank" rel="noopener">
         <i class="fab fa-github"></i>
       </a>
     </li>
@@ -945,7 +871,7 @@
     <h3>Related</h3>
     <ul>
       
-      <li><a href="/project/estimating-preferential-pairing-in-polyploids/">Estimating Preferential Pairing in Polyploids</a></li>
+      <li><a href="/project/dc-pull-over/">DC Pull-Over Analysis</a></li>
       
       <li><a href="/talk/dc-pull-over/">DC Pull-Over Analysis</a></li>
       

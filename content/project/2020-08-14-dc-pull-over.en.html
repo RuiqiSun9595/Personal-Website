@@ -1,0 +1,60 @@
+---
+title: DC Pull-Over Analysis
+author: Ruiqi Sun
+date: '2020-08-14'
+slug: dc-pull-over
+categories:
+  - R
+  - Shiny app
+tags:
+  - Data visualization
+  - Statistics
+subtitle: ''
+summary: "We are analyzing Stop Data Report from DC Metropolitan Police Department, and visualizing the data and made it easy to understand for readers to absorb information."
+authors: []
+lastmod: '2020-08-14T23:30:26-04:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>We are analyzing Stop Data Report from Metropolitan Police Department. We visualized the data and made it easy to understand for readers to absorb information. The data we use is Stop data from July 22 to December 29 (161 days, 23 weeks).</p>
+<p>In our shiny app, one could find 5 tabs:</p>
+<ul>
+<li><p>Explore Variable</p>
+<p>Readers could choose variables and see the relationship between the variable of select and the number of counts(being pulled over). In addition, we also provide two options for you. One could choose to view the total case of selected variable or could choose to view the daily cases.</p></li>
+<li><p>Explore Time Duration</p>
+<p>Again, Readers could choose variables. Furthermore, we provided a box-plot to show the relationship between the selected variable and log_stop_duration_minutes. One could find out the distribution of each category of selected variables. Readers could also see the results of anova table (partialy), which shouw the test results about comparing the average duration time in different groups.</p></li>
+<li><p>Pull-Over Map</p>
+<p>We provided a map of DC and used shadow to present how frequently polices will pull over drivers on average in seven Police District (defined by DC Metropolitan Police Department). The darker the color, polices will pull-over more frequently. Here, we provide two options: One could choose to view the map by weekday or by hourly.</p></li>
+<li><p>Spreadsheet</p>
+<p>Here is the data set we found from <a href="https://mpdc.dc.gov/node/1464816" class="uri">https://mpdc.dc.gov/node/1464816</a>. Readers could find specific row if you want to.</p></li>
+</ul>
+<iframe height="800" width="800" frameborder="no" src="https://rs9595.shinyapps.io/test2/">
+</iframe>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>1, Alex, &amp; jdharrison. (2014, April 27). Outputting multiple lines of text with renderText() in R shiny. Stack Overflow.</p>
+<p><a href="https://stackoverflow.com/questions/23233497/outputting-multiple-lines-of-text-with-rendertext-in-r-shiny" class="uri">https://stackoverflow.com/questions/23233497/outputting-multiple-lines-of-text-with-rendertext-in-r-shiny</a>.</p>
+<p>2, leaflet for R – Choropleths.</p>
+<p><a href="https://rstudio.github.io/leaflet/choropleths.html" class="uri">https://rstudio.github.io/leaflet/choropleths.html</a>.</p>
+<p>3, Parker, E. COVID-19 tracker.</p>
+<p><a href="https://shiny.rstudio.com/gallery/covid19-tracker.html" class="uri">https://shiny.rstudio.com/gallery/covid19-tracker.html</a>.</p>
+<p>4, Soltoff, B. (2020, April 10). Drawing interactive maps with Leaflet.</p>
+<p><a href="https://cfss.uchicago.edu/notes/leaflet/" class="uri">https://cfss.uchicago.edu/notes/leaflet/</a>.</p>
+<p>5, warship, &amp; DeanAttali. (2017, February 5). Create URL hyperlink in R Shiny? Stack Overflow.</p>
+<p><a href="https://stackoverflow.com/questions/42047422/create-url-hyperlink-in-r-shiny" class="uri">https://stackoverflow.com/questions/42047422/create-url-hyperlink-in-r-shiny</a>.</p>
+</div>
+<div id="data-sources" class="section level2">
+<h2>Data Sources:</h2>
+<p>1, Police Districts. (2019, June 25).</p>
+<p><a href="https://opendata.dc.gov/datasets/d2a63e5246ff41bdaca8ea9be95c8a4b_9/data" class="uri">https://opendata.dc.gov/datasets/d2a63e5246ff41bdaca8ea9be95c8a4b_9/data</a>.</p>
+<p>2, Stop Data Report: 2020. Stop Data Report: 2020. (2020, March 4).</p>
+<p><a href="https://mpdc.dc.gov/node/1464816" class="uri">https://mpdc.dc.gov/node/1464816</a>.</p>
+</div>

@@ -10,7 +10,7 @@ subtitle = ""
 
 [content]
   # Page type to display. E.g. project.
-  page_type = "talk"
+  page_type = "project"
   
   # Filter toolbar (optional).
   # Add or remove as many filters (`[[content.filter_button]]` instances) as you like.
@@ -26,12 +26,12 @@ subtitle = ""
     tag = "*"
   
   [[content.filter_button]]
-    name = "Deep Learning"
-    tag = "Deep Learning"
+    name = "Machine Learning"
+    tag = "Machine Learning"
   
   [[content.filter_button]]
-    name = "Other"
-    tag = "Demo"
+    name = "Data Visualization"
+    tag = "Data visualization"
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.

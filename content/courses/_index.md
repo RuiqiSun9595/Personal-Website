@@ -6,4 +6,4 @@ layout: docs
 title: Courses
 ---
 
-Update Soon!
+Coming Soon!
