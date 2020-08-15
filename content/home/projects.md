@@ -25,10 +25,6 @@ subtitle = ""
     name = "Data Visualization"
     tag = "Data visualization"  
     
-    
-  [[content.filter_button]]
-    name = "Machine Learning"
-    tag = "Machine Learning"
   
 
 [design]
