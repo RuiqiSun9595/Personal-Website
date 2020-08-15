@@ -3,7 +3,7 @@ header:
   caption: ""
   image: ""
 layout: docs
-title: ‘Core Courses:’
+title: "Core Courses:"
 ---
   
 * **Statistical Machine Learning**
