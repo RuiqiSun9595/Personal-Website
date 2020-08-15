@@ -128,16 +128,6 @@
   </url>
   
   <url>
-    <loc>/talk/dc-pull-over/</loc>
-    <lastmod>2020-04-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/talk/</loc>
-    <lastmod>2020-04-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/privacy/</loc>
     <lastmod>2018-06-28T00:00:00+01:00</lastmod>
   </url>
@@ -153,6 +143,10 @@
   
   <url>
     <loc>/publication_types/</loc>
+  </url>
+  
+  <url>
+    <loc>/talk/</loc>
   </url>
   
   <url>
