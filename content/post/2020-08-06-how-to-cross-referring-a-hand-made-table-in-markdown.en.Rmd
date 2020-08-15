@@ -1,6 +1,8 @@
 ---
 title: How to cross-referring a hand-made table in markdown
-author: Ruiqi Sun
+authors: 
+  - admin
+  
 date: '2020-08-06'
 summary: 'Tips for markdown.'
 categories:
@@ -18,7 +20,7 @@ image:
   preview_only: no
 ---
 
-To to cross-referring a hand-made table like this:
+To cross-referring a hand-made table like this:
 
 
       $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     

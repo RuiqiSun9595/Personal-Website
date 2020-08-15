@@ -21,7 +21,7 @@
 &lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;p&gt;To to cross-referring a hand-made table like this:&lt;/p&gt;
+&lt;p&gt;To cross-referring a hand-made table like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;  $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
  ---------------------- ---------------- ---------------- ---------------- 
    (2, 0, 0)              1                  0                  0             

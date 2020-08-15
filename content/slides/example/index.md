@@ -10,12 +10,12 @@ tags: []
 title: Slides
 ---
 
-{{< slide background-image = "./pre_draft_7_21_1.jpeg" width = "85%" height = "85%" >}}
+{{< slide background-image = "./pre_draft_7_21_1.jpeg"  >}}
 
 
 ---
 
-{{< slide background-image = "./pre_draft_7_21_2.jpeg" width = "85%" height = "85%" >}}
+{{< slide background-image = "./pre_draft_7_21_2.jpeg"  >}}
 
 
 ---
@@ -60,7 +60,6 @@ title: Slides
 
 ---
 
-{{< slide background-image="/media/boards.jpg" >}}
 
 {{< slide background-image = "./pre_draft_7_21_11.jpeg" >}}
 

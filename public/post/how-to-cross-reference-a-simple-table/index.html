@@ -33,7 +33,7 @@
   <meta name="description" content="Tips for markdown.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">
+  <link rel="alternate" hreflang="en-us" href="/post/how-to-cross-reference-a-simple-table/">
 
   
 
@@ -234,7 +234,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
 
-  <link rel="canonical" href="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">
+  <link rel="canonical" href="/post/how-to-cross-reference-a-simple-table/">
 
   
   
@@ -250,15 +250,15 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Ruiqi Sun">
-  <meta property="og:url" content="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">
-  <meta property="og:title" content="How to cross-referring a hand-made table in markdown | Ruiqi Sun">
+  <meta property="og:url" content="/post/how-to-cross-reference-a-simple-table/">
+  <meta property="og:title" content="how to cross reference a simple table | Ruiqi Sun">
   <meta property="og:description" content="Tips for markdown."><meta property="og:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png">
   <meta property="twitter:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2020-08-06T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2020-08-15T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2020-08-06T12:23:47-04:00">
+    <meta property="article:modified_time" content="2020-08-15T13:49:14-04:00">
   
 
   
@@ -282,12 +282,12 @@
   "@type": "BlogPosting",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "/post/how-to-cross-referring-a-hand-made-table-in-markdown/"
+    "@id": "/post/how-to-cross-reference-a-simple-table/"
   },
-  "headline": "How to cross-referring a hand-made table in markdown",
+  "headline": "how to cross reference a simple table",
   
-  "datePublished": "2020-08-06T00:00:00Z",
-  "dateModified": "2020-08-06T12:23:47-04:00",
+  "datePublished": "2020-08-15T00:00:00Z",
+  "dateModified": "2020-08-15T13:49:14-04:00",
   
   "author": {
     "@type": "Person",
@@ -320,7 +320,7 @@
 
 
 
-  <title>How to cross-referring a hand-made table in markdown | Ruiqi Sun</title>
+  <title>how to cross reference a simple table | Ruiqi Sun</title>
 
 </head>
 
@@ -602,7 +602,7 @@
   
   
 <div class="article-container pt-3">
-  <h1>How to cross-referring a hand-made table in markdown</h1>
+  <h1>how to cross reference a simple table</h1>
 
   
 
@@ -614,16 +614,6 @@
 
   
   
-  
-  
-  <div>
-    
-
-  
-  <span ><a href="/author/ruiqi-sun/">Ruiqi Sun</a></span>
-  </div>
-  
-  
 
   
   <span class="article-date">
@@ -633,7 +623,7 @@
           Last updated on
       
     
-    Aug 6, 2020
+    Aug 15, 2020
   </span>
   
 
@@ -682,11 +672,7 @@
   <div class="article-container">
 
     <div class="article-style">
-      
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-
-
-<p>To cross-referring a hand-made table like this:</p>
+      <p>To cross-referring a hand-made table like this:</p>
 <pre><code>  $\boldsymbol m_{ij}$   $Pr(z_{ij}=0)$   $Pr(z_{ij}=1)$   $Pr(z_{ij}=2)$     
  ---------------------- ---------------- ---------------- ---------------- 
    (2, 0, 0)              1                  0                  0             
@@ -696,57 +682,19 @@
    (0, 1, 1)               0                 0.5                0.5            
    (0, 0, 2)              0                  0                  1  
 
-Table: (\#tab:label) table name</code></pre>
-<p>You chould add <code>(\#tab:label)</code>before the table name, and use <code>\@ref(tab:label)</code>to refer the table <a href="#tab:label">1</a>.</p>
-<table>
-<caption><span id="tab:label">Table 1: </span> table name</caption>
-<thead>
-<tr class="header">
-<th align="center"><span class="math inline">\(\boldsymbol m_{ij}\)</span></th>
-<th align="center"><span class="math inline">\(Pr(z_{ij} = 0)\)</span></th>
-<th align="center"><span class="math inline">\(Pr(z_{ij} = 1)\)</span></th>
-<th align="center"><span class="math inline">\(Pr(z_{ij} = 2)\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">(2, 0, 0)</td>
-<td align="center">1</td>
-<td align="center">0</td>
-<td align="center">0</td>
-</tr>
-<tr class="even">
-<td align="center">(1, 1, 0)</td>
-<td align="center">0.5</td>
-<td align="center">0.5</td>
-<td align="center">0</td>
-</tr>
-<tr class="odd">
-<td align="center">(1, 0, 1)</td>
-<td align="center">0</td>
-<td align="center">1</td>
-<td align="center">0</td>
-</tr>
-<tr class="even">
-<td align="center">(0, 2, 0)</td>
-<td align="center">0.25</td>
-<td align="center">0.5</td>
-<td align="center">0.25</td>
-</tr>
-<tr class="odd">
-<td align="center">(0, 1, 1)</td>
-<td align="center">0</td>
-<td align="center">0.5</td>
-<td align="center">0.5</td>
-</tr>
-<tr class="even">
-<td align="center">(0, 0, 2)</td>
-<td align="center">0</td>
-<td align="center">0</td>
-<td align="center">1</td>
-</tr>
-</tbody>
-</table>
+Table: (\#tab:label) table name
+</code></pre>
+<p>You chould add <code>(\#tab:label)</code>before the table name, and use <code>\@ref(tab:label)</code>to refer the table @ref(tab:label).</p>
+<p>$\boldsymbol m_{ij}$   $Pr(z_{ij} = 0)$   $Pr(z_{ij} = 1)$   $Pr(z_{ij} = 2)$</p>
+<hr>
+<pre><code>   (2, 0, 0)              1                  0                  0             
+   (1, 1, 0)             0.5                0.5                 0             
+   (1, 0, 1)              0                  1                  0             
+   (0, 2, 0)              0.25               0.5                0.25           
+   (0, 1, 1)               0                 0.5                0.5            
+   (0, 0, 2)              0                  0                  1  
+</code></pre>
+<p>Table: (#tab:label) table name</p>
 
     </div>
 
@@ -760,8 +708,6 @@ Table: (\#tab:label) table name</code></pre>
 <div class="article-tags">
   
   <a class="badge badge-light" href="/tag/tips/">Tips</a>
-  
-  <a class="badge badge-light" href="/tag/markdown/">Markdown</a>
   
 </div>
 
@@ -779,8 +725,7 @@ Table: (\#tab:label) table name</code></pre>
 
 
   
-    
-    
+  
 
 
 
@@ -864,7 +809,6 @@ Table: (\#tab:label) table name</code></pre>
   
 
 
-  
 
 
 
@@ -882,6 +826,8 @@ Table: (\#tab:label) table name</code></pre>
   <div class="article-widget content-widget-hr">
     <h3>Related</h3>
     <ul>
+      
+      <li><a href="/post/how-to-cross-referring-a-hand-made-table-in-markdown/">How to cross-referring a hand-made table in markdown</a></li>
       
       <li><a href="/project/dc-pull-over/">DC Pull-Over Analysis</a></li>
       

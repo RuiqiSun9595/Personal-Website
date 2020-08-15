@@ -33,7 +33,7 @@ url_source: '#'
 ---
 
 {{% alert note %}}
-Click the *Slides* button above to demo Academic's Markdown slides feature.
+Click the *Slides* button above to see the thesis talk and please use full screen method.
 {{% /alert %}}
 
 
