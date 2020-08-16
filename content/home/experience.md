@@ -36,7 +36,7 @@ date_format = "Jan 2006"
 
 [[experience]]
   title = "Tutor"
-  company = "American University Statistics Software Support"
+  company = "American University Statistical Software Support"
   company_url = ""
   location = "Washington, DC"
   date_start = "2020-01-13"

@@ -27,12 +27,15 @@ biblio-style: apalike
 link-citations: yes
 math: true
 
-url_code: '#'
-url_dataset: '#'
 url_pdf: https://dra.american.edu/islandora/object/auislandora%3A85274/datastream/PDF/view
 url_slides: "slides/example/"
-url_source: '#'
+url_code: '#'
+url_dataset: '#'
 ---
+
+{{% alert note %}}
+Click the *Slides* button above to see the talk, and please use full screen method.
+{{% /alert %}}
 
 # Introduction {#ch:1}
 
