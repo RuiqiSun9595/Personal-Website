@@ -35,6 +35,20 @@ date_format = "Jan 2006"
 """
 
 [[experience]]
+  title = "Tutor"
+  company = "American University Statistics Software Support"
+  company_url = ""
+  location = "Washington, DC"
+  date_start = "2020-01-13"
+  date_end = ""
+  description = """
+  Responsibilities include:
+  
+  * Advised and helped students to solve their problems in R, SAS, SQL, SPSS, Excel, etc.
+ 
+"""
+
+[[experience]]
   title = "Teaching Assistant"
   company = "American University"
   company_url = ""
