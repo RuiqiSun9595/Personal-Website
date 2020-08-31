@@ -26,6 +26,16 @@ date_format = "Jan 2006"
   certificate_url = "https://www.youracclaim.com/badges/14b1c675-9eee-4bbf-91cc-c2a3d4198d64/public_url"
   date_start = "2020-01-06"
   date_end = ""
-  description = ""
+  description = "Base Programming Specialists have passed a performance-based exam where they have completed programming assignments in SAS. They have demonstrated proficiency in reading and creating data, manipulating data with functions and formats, controlling program flow with loops and conditional statements, creating summary and frequency reports, and identifying and correcting program errors."
+  
+[[item]]
+  organization = "SAS"
+  organization_url = "https://www.sas.com/en_us/home.html"
+  title = "SAS Certified Professional: Advanced Programming Using SAS 9.4"
+  url = ""
+  certificate_url = "https://www.youracclaim.com/earner/earned/badge/b1aba420-3db7-4d63-a6d1-56f34d301b82"
+  date_start = "2020-08-27"
+  date_end = ""
+  description = "SAS Advanced Programming Professionals have demonstrated a high level of proficiency in SAS programming by passing a performance-based exam. They are skilled in advanced DATA step programming techniques such as arrays, PROC FCMP, hash objects, and data compression. They are able to write and interpret PROC SQL code and automate programming tasks using the SAS MACRO facility."
 
 +++
