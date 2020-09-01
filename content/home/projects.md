@@ -27,7 +27,7 @@ subtitle = ""
   
   [[content.filter_button]]
     name = "Data Visualization"
-    tag = "Data visualization"  
+    tag = "Data Visualization"  
     
     
   [[content.filter_button]]
